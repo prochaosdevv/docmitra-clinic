@@ -9,6 +9,7 @@ export default function manifest(): MetadataRoute.Manifest {
     display: "standalone",
     background_color: "#ffffff",
     theme_color: "#4169e1",
+    generator: "himotechglobal",
     icons: [
       {
         src: "/favicon.png",
