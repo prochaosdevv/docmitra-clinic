@@ -391,9 +391,9 @@ export default function AppointmentDetailsPage() {
         <Card>
           <CardContent className="p-3">
             <Accordion type="multiple" defaultValue={["vitals", "complaints"]} className="space-y-2">
-              <AccordionItem value="vitals" className="border rounded-md px-3">
-                <AccordionTrigger className="py-2 text-sm font-medium hover:no-underline">Vitals</AccordionTrigger>
-                <AccordionContent className="pt-2 pb-3">
+              <AccordionItem value="vitals" className="border rounded-md">
+                <AccordionTrigger className="py-2 px-2 text-sm font-medium hover:no-underline">Vitals</AccordionTrigger>
+                <AccordionContent className="pt-2 pb-3 px-2">
                   {latestVitals ? (
                     <div className="space-y-4">
                       {/* Latest Vitals Display */}
@@ -581,9 +581,11 @@ export default function AppointmentDetailsPage() {
                 </AccordionContent>
               </AccordionItem>
 
-              <AccordionItem value="complaints" className="border rounded-md px-3">
-                <AccordionTrigger className="py-2 text-sm font-medium hover:no-underline">Complaints</AccordionTrigger>
-                <AccordionContent className="pt-2 pb-3">
+              <AccordionItem value="complaints" className="border rounded-md">
+                <AccordionTrigger className="py-2 px-2 text-sm font-medium hover:no-underline">
+                  Complaints
+                </AccordionTrigger>
+                <AccordionContent className="pt-2 pb-3 px-2">
                   <EditableTagsArea
                     tags={complaints}
                     onChange={setComplaints}
@@ -594,9 +596,11 @@ export default function AppointmentDetailsPage() {
                 </AccordionContent>
               </AccordionItem>
 
-              <AccordionItem value="diagnosis" className="border rounded-md px-3">
-                <AccordionTrigger className="py-2 text-sm font-medium hover:no-underline">Diagnosis</AccordionTrigger>
-                <AccordionContent className="pt-2 pb-3">
+              <AccordionItem value="diagnosis" className="border rounded-md">
+                <AccordionTrigger className="py-2 px-2 text-sm font-medium hover:no-underline">
+                  Diagnosis
+                </AccordionTrigger>
+                <AccordionContent className="pt-2 pb-3 px-2">
                   <EditableTagsArea
                     tags={diagnosis}
                     onChange={setDiagnosis}
@@ -607,11 +611,11 @@ export default function AppointmentDetailsPage() {
                 </AccordionContent>
               </AccordionItem>
 
-              <AccordionItem value="prescriptions" className="border rounded-md px-3">
-                <AccordionTrigger className="py-2 text-sm font-medium hover:no-underline">
+              <AccordionItem value="prescriptions" className="border rounded-md">
+                <AccordionTrigger className="py-2 px-2 text-sm font-medium hover:no-underline">
                   Prescriptions
                 </AccordionTrigger>
-                <AccordionContent className="pt-2 pb-3">
+                <AccordionContent className="pt-2 pb-3 px-2">
                   <PrescriptionForm
                     prescriptions={prescriptions}
                     onChange={setPrescriptions}
@@ -639,11 +643,11 @@ export default function AppointmentDetailsPage() {
                 </AccordionContent>
               </AccordionItem>
 
-              <AccordionItem value="instructions" className="border rounded-md px-3">
-                <AccordionTrigger className="py-2 text-sm font-medium hover:no-underline">
+              <AccordionItem value="instructions" className="border rounded-md">
+                <AccordionTrigger className="py-2 px-2 text-sm font-medium hover:no-underline">
                   Instructions
                 </AccordionTrigger>
-                <AccordionContent className="pt-2 pb-3">
+                <AccordionContent className="pt-2 pb-3 px-2">
                   <EditableTagsArea
                     tags={instructions}
                     onChange={setInstructions}

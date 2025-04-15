@@ -13,7 +13,6 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "DocMitr - Clinic Management System",
   description: "A comprehensive clinic management system",
-  generator: "himotechglobal",
   icons: {
     icon: [
       { url: "/favicon.png", sizes: "32x32", type: "image/png" },
@@ -22,6 +21,7 @@ export const metadata: Metadata = {
     apple: { url: "/favicon.png", sizes: "180x180", type: "image/png" },
     shortcut: { url: "/favicon.png" },
   },
+    generator: 'v0.dev'
 }
 
 export default function RootLayout({
@@ -31,9 +31,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <link rel="icon" href="/favicon.png" />
-      </head>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <AuthProvider>

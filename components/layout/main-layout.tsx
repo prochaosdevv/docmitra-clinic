@@ -6,34 +6,38 @@ import { MobileNavigation } from "@/components/mobile-navigation"
 import { Sidebar } from "@/components/layout/sidebar"
 import { Bell } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { ThemeToggle } from "@/components/theme-toggle"
-// Add the import for PullToRefresh
-import { PullToRefresh } from "@/components/ui/pull-to-refresh"
-import { useToast } from "@/components/ui/use-toast"
 
-// In the MainLayout component, wrap the main content with PullToRefresh
-export function MainLayout({ children }: { children: React.ReactNode }) {
-  const { toast } = useToast()
+interface MainLayoutProps {
+  children: React.ReactNode
+}
 
-  const handleRefresh = async () => {
-    // Simulate a refresh delay
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-
-    // Show a toast notification
-    toast({
-      title: "Refreshed",
-      description: "Content has been updated",
-    })
-
-    // In a real app, you would refetch data here
-  }
+export function MainLayout({ children }: MainLayoutProps) {
+  // Mock notifications data
+  const notifications = [
+    { id: 1, message: "New appointment scheduled", time: "10 mins ago" },
+    { id: 2, message: "Dr. Smith updated patient records", time: "30 mins ago" },
+    { id: 3, message: "Prescription ready for review", time: "1 hour ago" },
+    { id: 4, message: "Lab results available for Patient #1234", time: "2 hours ago" },
+    { id: 5, message: "Staff meeting at 3:00 PM", time: "3 hours ago" },
+  ]
 
   return (
-    <div className="flex h-screen overflow-hidden bg-background">
-      <Sidebar />
-      <div className="flex flex-col flex-1 overflow-hidden">
+    <div className="flex min-h-screen bg-muted/30">
+      {/* Desktop Sidebar - hidden on mobile */}
+      <div className="hidden md:block md:w-64 md:flex-shrink-0">
+        <div className="fixed inset-y-0 z-50 w-64 border-r">
+          <Sidebar />
+        </div>
+      </div>
+
+      {/* Main Content Area */}
+      <div className="flex flex-col w-full">
+        {/* Mobile Header - visible only on mobile */}
         <MobileHeader />
+
+        {/* Desktop Header - visible only on desktop */}
         <header className="hidden md:flex h-16 items-center justify-between border-b bg-background px-6">
           <h1 className="text-2xl font-bold">Clinic Management</h1>
           <div className="flex items-center gap-2">
@@ -54,8 +58,7 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
                   </Button>
                 </div>
                 <div className="max-h-80 overflow-y-auto">
-                  {/* Mock notifications data */}
-                  {/* {notifications.map((notification) => (
+                  {notifications.map((notification) => (
                     <DropdownMenuItem
                       key={notification.id}
                       className="flex flex-col items-start p-3 cursor-pointer hover:bg-muted"
@@ -63,7 +66,7 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
                       <p className="text-sm">{notification.message}</p>
                       <span className="text-xs text-muted-foreground mt-1">{notification.time}</span>
                     </DropdownMenuItem>
-                  ))} */}
+                  ))}
                 </div>
                 <div className="p-2 border-t text-center">
                   <Button variant="ghost" size="sm" className="text-xs text-blue-500 w-full">
@@ -74,9 +77,11 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
             </DropdownMenu>
           </div>
         </header>
-        <PullToRefresh onRefresh={handleRefresh}>
-          <main className="flex-1 overflow-y-auto pb-16 md:pb-0">{children}</main>
-        </PullToRefresh>
+
+        {/* Page Content */}
+        <main className="flex-1 px-4 py-4 pb-20 md:p-6 md:pb-6">{children}</main>
+
+        {/* Mobile Navigation - visible only on mobile */}
         <MobileNavigation />
       </div>
     </div>
