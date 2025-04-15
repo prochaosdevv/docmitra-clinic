@@ -1,44 +1,59 @@
 "use client"
 
-import { Activity, Bell, Menu, Search } from "lucide-react"
+import Image from "next/image"
+import { Bell } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useAuth } from "@/contexts/auth-context"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Sidebar } from "@/components/layout/sidebar"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
-export function MobileHeader({ title }: { title: string }) {
-  const { user } = useAuth()
+export function MobileHeader() {
+  // Mock notifications data
+  const notifications = [
+    { id: 1, message: "New appointment scheduled", time: "10 mins ago" },
+    { id: 2, message: "Dr. Smith updated patient records", time: "30 mins ago" },
+    { id: 3, message: "Prescription ready for review", time: "1 hour ago" },
+    { id: 4, message: "Lab results available for Patient #1234", time: "2 hours ago" },
+    { id: 5, message: "Staff meeting at 3:00 PM", time: "3 hours ago" },
+  ]
 
   return (
-    <div className="sticky top-0 z-20 flex h-14 items-center justify-between bg-background px-4 border-b md:hidden w-full">
-      <div className="flex items-center gap-3">
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="md:hidden">
-              <Menu className="h-5 w-5" />
-              <span className="sr-only">Toggle menu</span>
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="p-0">
-            <Sidebar />
-          </SheetContent>
-        </Sheet>
-        <div className="flex items-center gap-2">
-          <Activity className="h-5 w-5 text-primary" />
-          <span className="font-semibold">{title}</span>
-        </div>
-      </div>
+    <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b bg-background px-4 md:hidden">
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon">
-          <Search className="h-5 w-5" />
-        </Button>
-        <Button variant="ghost" size="icon" className="relative">
-          <Bell className="h-5 w-5" />
-          <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-primary"></span>
-        </Button>
-        <ThemeToggle />
+        <Image src="/logo.png" alt="DocMitr Logo" width={28} height={28} />
+        <h1 className="text-lg font-semibold text-blue-600">DocMitr</h1>
       </div>
-    </div>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="icon" className="relative">
+            <Bell className="h-5 w-5" />
+            <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
+            <span className="sr-only">Notifications</span>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-80">
+          <div className="flex items-center justify-between p-2 border-b">
+            <h3 className="font-medium">Notifications</h3>
+            <Button variant="ghost" size="sm" className="text-xs text-blue-500">
+              Mark all as read
+            </Button>
+          </div>
+          <div className="max-h-80 overflow-y-auto">
+            {notifications.map((notification) => (
+              <DropdownMenuItem
+                key={notification.id}
+                className="flex flex-col items-start p-3 cursor-pointer hover:bg-muted"
+              >
+                <p className="text-sm">{notification.message}</p>
+                <span className="text-xs text-muted-foreground mt-1">{notification.time}</span>
+              </DropdownMenuItem>
+            ))}
+          </div>
+          <div className="p-2 border-t text-center">
+            <Button variant="ghost" size="sm" className="text-xs text-blue-500 w-full">
+              View all notifications
+            </Button>
+          </div>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </header>
   )
 }

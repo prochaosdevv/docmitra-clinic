@@ -1,9 +1,9 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
 import {
-  Activity,
   Calendar,
   ClipboardList,
   LayoutDashboard,
@@ -43,10 +43,10 @@ export function Sidebar() {
 
   return (
     <div className="flex h-full flex-col bg-background">
-      <div className="flex h-14 items-center border-b px-4">
+      <div className="flex h-16 items-center border-b px-4">
         <div className="flex items-center gap-2">
-          <Activity className="h-6 w-6 text-primary" />
-          <span className="text-xl font-bold">MediClinic</span>
+          <Image src="/logo.png" alt="DocMitr Logo" width={40} height={40} />
+          <span className="text-xl font-bold text-blue-600">DocMitr</span>
         </div>
       </div>
 

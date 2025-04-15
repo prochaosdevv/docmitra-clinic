@@ -26,8 +26,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 const MOCK_USERS = [
   {
     id: "user-1",
-    name: "Dr. Admin Smith",
-    email: "admin@mediclinic.com",
+    name: "Admin User",
+    email: "admin@docmitr.com",
     password: "password123", // In a real app, never store plain text passwords
     role: "admin" as UserRole,
     avatar: "/compassionate-doctor-consultation.png",
@@ -35,20 +35,11 @@ const MOCK_USERS = [
   {
     id: "user-2",
     name: "Dr. Michael Chen",
-    email: "michael.chen@mediclinic.com",
+    email: "doctor@docmitr.com",
     password: "password123",
     role: "doctor" as UserRole,
     doctorId: "D-1001",
     avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Dr. Michael Chen",
-  },
-  {
-    id: "user-3",
-    name: "Dr. Sarah Lee",
-    email: "sarah.lee@mediclinic.com",
-    password: "password123",
-    role: "doctor" as UserRole,
-    doctorId: "D-1002",
-    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Dr. Sarah Lee",
   },
 ]
 
@@ -58,13 +49,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Check for saved user on mount
   useEffect(() => {
-    const savedUser = localStorage.getItem("mediclinic-user")
+    const savedUser = localStorage.getItem("docmitr-user")
     if (savedUser) {
       try {
         setUser(JSON.parse(savedUser))
       } catch (error) {
         console.error("Failed to parse saved user", error)
-        localStorage.removeItem("mediclinic-user")
+        localStorage.removeItem("docmitr-user")
       }
     }
     setIsLoading(false)
@@ -82,7 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Remove password before storing user
       const { password: _, ...userWithoutPassword } = foundUser
       setUser(userWithoutPassword)
-      localStorage.setItem("mediclinic-user", JSON.stringify(userWithoutPassword))
+      localStorage.setItem("docmitr-user", JSON.stringify(userWithoutPassword))
       setIsLoading(false)
       return true
     }
@@ -93,7 +84,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = () => {
     setUser(null)
-    localStorage.removeItem("mediclinic-user")
+    localStorage.removeItem("docmitr-user")
   }
 
   return <AuthContext.Provider value={{ user, isLoading, login, logout }}>{children}</AuthContext.Provider>

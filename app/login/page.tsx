@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Activity } from "lucide-react"
+import Image from "next/image"
 import { useAuth } from "@/contexts/auth-context"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -28,82 +28,96 @@ export default function LoginPage() {
       if (success) {
         toast({
           title: "Login successful",
-          description: "Welcome to MediClinic Management System",
+          description: "Welcome to DocMitr",
         })
         router.push("/")
       } else {
         toast({
           title: "Login failed",
-          description: "Invalid email or password. Please try again.",
+          description: "Invalid email or password",
           variant: "destructive",
         })
       }
     } catch (error) {
       toast({
         title: "Login error",
-        description: "An unexpected error occurred. Please try again.",
+        description: "An unexpected error occurred",
         variant: "destructive",
       })
+      console.error("Login error:", error)
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-muted/40 p-4">
-      <div className="absolute inset-0 -z-10 h-full w-full bg-white [background:radial-gradient(125%_125%_at_50%_10%,#fff_40%,#63e_100%)]"></div>
+  const handleDemoLogin = (demoEmail: string) => {
+    setEmail(demoEmail)
+    setPassword("password123")
+  }
 
-      <div className="w-full max-w-md">
-        <div className="mb-8 text-center">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 mb-4">
-            <Activity className="h-8 w-8 text-primary" />
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 p-4">
+      <div className="w-full max-w-sm">
+        <div className="mb-6 flex flex-col items-center">
+          <div className="relative h-20 w-40 mb-2">
+            <Image src="/logo.png" alt="DocMitr Logo" fill className="object-contain" priority />
           </div>
-          <h1 className="text-2xl font-bold">MediClinic</h1>
-          <p className="text-sm text-muted-foreground mt-2">Healthcare Management System</p>
+          <h1 className="text-xl font-semibold text-blue-600">Healthcare Management</h1>
         </div>
 
-        <div className="rounded-xl bg-white/80 backdrop-blur-sm p-6 shadow-lg">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="rounded-lg bg-white p-6 shadow-md">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="name@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                autoComplete="email"
-                className="h-12"
+                className="h-10"
               />
             </div>
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password">Password</Label>
-                <a href="#" className="text-xs text-primary hover:underline">
-                  Forgot password?
-                </a>
-              </div>
+              <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                autoComplete="current-password"
-                className="h-12"
+                className="h-10"
               />
             </div>
-            <Button type="submit" className="w-full h-12 text-base" disabled={isSubmitting}>
+            <Button type="submit" className="w-full h-10 bg-blue-600 hover:bg-blue-700" disabled={isSubmitting}>
               {isSubmitting ? "Signing in..." : "Sign in"}
             </Button>
           </form>
         </div>
 
-        <div className="mt-6 text-center text-sm text-muted-foreground">
-          <p>Demo accounts:</p>
-          <p>Admin: admin@mediclinic.com / password123</p>
-          <p>Doctor: michael.chen@mediclinic.com / password123</p>
+        <div className="mt-6 rounded-lg bg-white p-4 shadow-md">
+          <p className="text-sm font-medium text-gray-700 mb-2">Demo Accounts:</p>
+          <div className="space-y-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full justify-between text-left font-normal"
+              onClick={() => handleDemoLogin("admin@docmitr.com")}
+            >
+              <span>Admin</span>
+              <span className="text-gray-500">admin@docmitr.com</span>
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full justify-between text-left font-normal"
+              onClick={() => handleDemoLogin("doctor@docmitr.com")}
+            >
+              <span>Doctor</span>
+              <span className="text-gray-500">doctor@docmitr.com</span>
+            </Button>
+          </div>
+          <p className="mt-2 text-xs text-gray-500">Password for all accounts: password123</p>
         </div>
       </div>
     </div>

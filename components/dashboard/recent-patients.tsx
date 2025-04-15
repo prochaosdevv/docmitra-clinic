@@ -52,24 +52,23 @@ const patients = [
 
 export function RecentPatients() {
   return (
-    // Wrap the Table component with ResponsiveTable
     <ResponsiveTable>
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Patient</TableHead>
-            <TableHead>Contact</TableHead>
-            <TableHead>Registered</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead className="w-[70%] sm:w-auto">Patient</TableHead>
+            <TableHead className="hidden sm:table-cell">Contact</TableHead>
+            <TableHead className="hidden sm:table-cell">Registered</TableHead>
+            <TableHead className="hidden sm:table-cell">Status</TableHead>
+            <TableHead className="w-[30%] sm:w-auto text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {patients.map((patient) => (
             <TableRow key={patient.id}>
-              <TableCell>
-                <div className="flex items-center gap-3">
-                  <Avatar className="h-9 w-9">
+              <TableCell className="max-w-[200px]">
+                <div className="flex items-center gap-2">
+                  <Avatar className="h-8 w-8 flex-shrink-0">
                     <AvatarImage
                       src={`/abstract-geometric-shapes.png?height=36&width=36&query=${patient.name}`}
                       alt={patient.name}
@@ -81,24 +80,24 @@ export function RecentPatients() {
                         .join("")}
                     </AvatarFallback>
                   </Avatar>
-                  <div>
-                    <div className="font-medium">{patient.name}</div>
-                    <div className="text-xs text-muted-foreground">{patient.id}</div>
+                  <div className="min-w-0">
+                    <div className="font-medium truncate">{patient.name}</div>
+                    <div className="text-xs text-muted-foreground truncate">{patient.id}</div>
                   </div>
                 </div>
               </TableCell>
-              <TableCell>
+              <TableCell className="hidden sm:table-cell">
                 <div className="text-sm">
                   <div>{patient.email}</div>
                   <div className="text-xs text-muted-foreground">{patient.phone}</div>
                 </div>
               </TableCell>
-              <TableCell>{patient.dateRegistered}</TableCell>
-              <TableCell>
+              <TableCell className="hidden sm:table-cell">{patient.dateRegistered}</TableCell>
+              <TableCell className="hidden sm:table-cell">
                 <Badge variant={patient.status === "Active" ? "default" : "secondary"}>{patient.status}</Badge>
               </TableCell>
               <TableCell className="text-right">
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" className="h-8 w-8">
                   <FileText className="h-4 w-4" />
                   <span className="sr-only">View records</span>
                 </Button>

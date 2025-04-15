@@ -1,8 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { Calendar, Clock } from "lucide-react"
-import { ResponsiveTable } from "@/components/ui/responsive-table"
-import { Table } from "@/components/ui/table"
 
 const appointments = [
   {
@@ -59,50 +56,44 @@ const appointments = [
 
 export function UpcomingAppointments() {
   return (
-    <div className="space-y-4">
-      <ResponsiveTable>
-        <Table>
-          {appointments.map((appointment) => (
-            <div key={appointment.id} className="flex items-start justify-between rounded-lg border p-3">
-              <div className="flex items-start gap-3">
-                <Avatar className="mt-1 h-9 w-9">
-                  <AvatarImage
-                    src={`/abstract-geometric-shapes.png?height=36&width=36&query=${appointment.patientName}`}
-                    alt={appointment.patientName}
-                  />
-                  <AvatarFallback>
-                    {appointment.patientName
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <div className="font-medium">{appointment.patientName}</div>
-                  <div className="text-xs text-muted-foreground">{appointment.patientId}</div>
-                  <div className="mt-1 flex items-center gap-2 text-xs">
-                    <div className="flex items-center gap-1">
-                      <Calendar className="h-3 w-3" />
-                      <span>{appointment.date}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
-                      <span>{appointment.time}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="text-right">
-                <Badge variant={appointment.status === "Confirmed" ? "default" : "secondary"}>
-                  {appointment.status}
-                </Badge>
-                <div className="mt-1 text-xs font-medium">{appointment.doctorName}</div>
-                <div className="text-xs text-muted-foreground">{appointment.specialty}</div>
-              </div>
+    <div className="space-y-3">
+      {appointments.map((appointment) => (
+        <div key={appointment.id} className="flex items-start justify-between rounded-lg border p-3">
+          <div className="flex items-start gap-2 min-w-0 max-w-[65%]">
+            <Avatar className="mt-1 h-8 w-8 flex-shrink-0">
+              <AvatarImage
+                src={`/abstract-geometric-shapes.png?height=36&width=36&query=${appointment.patientName}`}
+                alt={appointment.patientName}
+              />
+              <AvatarFallback>
+                {appointment.patientName
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")}
+              </AvatarFallback>
+            </Avatar>
+            <div className="min-w-0">
+              <div className="font-medium truncate">{appointment.patientName}</div>
+              <div className="text-xs text-muted-foreground truncate">{appointment.patientId}</div>
+              <div className="mt-1 text-xs text-muted-foreground truncate">{appointment.doctorName}</div>
             </div>
-          ))}
-        </Table>
-      </ResponsiveTable>
+          </div>
+          <div className="text-right flex flex-col items-end">
+            <div className="flex items-center gap-1.5 flex-wrap justify-end">
+              <div className="text-xs whitespace-nowrap">
+                {appointment.date}, {appointment.time}
+              </div>
+              <Badge
+                variant={appointment.status === "Confirmed" ? "default" : "secondary"}
+                className="text-xs px-1.5 py-0"
+              >
+                {appointment.status}
+              </Badge>
+            </div>
+            <div className="mt-1 text-xs text-muted-foreground">{appointment.specialty}</div>
+          </div>
+        </div>
+      ))}
     </div>
   )
 }

@@ -7,11 +7,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ArrowLeft, Calendar, Download, FileText, Phone, Printer, User } from "lucide-react"
+import { ArrowLeft, Calendar, Clock, Download, FileText, Phone, Printer, Stethoscope, User } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { ResponsiveTable } from "@/components/ui/responsive-table"
 import { VitalsChart } from "@/components/medical-records/vitals-chart"
+import { useState } from "react"
 
 // Mock patient data
 const PATIENTS = [
@@ -114,10 +115,8 @@ const PATIENTS = [
     vitals: {
       bloodPressure: "138/85 mmHg",
       heartRate: "76 bpm",
-      temperature: "98.6 °F",
-      respiratoryRate: "16 rpm",
-      weight: "165 lbs",
-      height: "5'6\"",
+      weight: "75 kg",
+      glucose: "95 mg/dL",
       bmi: "26.6",
       oxygenSaturation: "98%",
     },
@@ -170,10 +169,8 @@ const PATIENTS = [
     vitals: {
       bloodPressure: "120/80 mmHg",
       heartRate: "72 bpm",
-      temperature: "98.4 °F",
-      respiratoryRate: "14 rpm",
-      weight: "185 lbs",
-      height: "5'10\"",
+      weight: "84 kg",
+      glucose: "90 mg/dL",
       bmi: "26.5",
       oxygenSaturation: "99%",
     },
@@ -187,6 +184,15 @@ export default function PatientRecordsPage() {
 
   // Find the patient by ID
   const patient = PATIENTS.find((p) => p.id === patientId)
+
+  // First, add a useState hook to track the selected appointment
+  // Add this near the top of the component, after the patient is found
+  const [selectedAppointmentId, setSelectedAppointmentId] = useState<string | null>(null)
+
+  // Find the selected appointment when an ID is set
+  const selectedAppointment = selectedAppointmentId
+    ? patient.appointments.find((app) => app.id === selectedAppointmentId)
+    : null
 
   if (!patient) {
     return (
@@ -279,12 +285,22 @@ export default function PatientRecordsPage() {
             <Separator />
 
             <Tabs defaultValue="summary">
-              <TabsList className="grid w-full grid-cols-3 md:grid-cols-5">
-                <TabsTrigger value="summary">Summary</TabsTrigger>
-                <TabsTrigger value="records">Medical Records</TabsTrigger>
-                <TabsTrigger value="appointments">Appointments</TabsTrigger>
-                <TabsTrigger value="medications">Medications</TabsTrigger>
-                <TabsTrigger value="vitals">Vitals</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-5 md:w-auto md:inline-flex">
+                <TabsTrigger value="summary" className="px-2 md:px-3">
+                  Summary
+                </TabsTrigger>
+                <TabsTrigger value="records" className="px-2 md:px-3">
+                  Reports
+                </TabsTrigger>
+                <TabsTrigger value="appointments" className="px-2 md:px-3">
+                  Appointments
+                </TabsTrigger>
+                <TabsTrigger value="medications" className="px-2 md:px-3">
+                  Medications
+                </TabsTrigger>
+                <TabsTrigger value="vitals" className="px-2 md:px-3">
+                  Vitals
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="summary" className="space-y-4 pt-4">
@@ -355,7 +371,7 @@ export default function PatientRecordsPage() {
                 </div>
 
                 <div>
-                  <h4 className="text-sm font-medium">Recent Medical Records</h4>
+                  <h4 className="text-sm font-medium">Recent Reports</h4>
                   <ResponsiveTable>
                     <Table>
                       <TableHeader>
@@ -468,55 +484,132 @@ export default function PatientRecordsPage() {
               </TabsContent>
 
               <TabsContent value="appointments" className="pt-4">
-                <ResponsiveTable>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Appointment ID</TableHead>
-                        <TableHead>Date</TableHead>
-                        <TableHead>Time</TableHead>
-                        <TableHead>Doctor</TableHead>
-                        <TableHead>Type</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {patient.appointments.map((appointment) => (
-                        <TableRow key={appointment.id}>
-                          <TableCell>{appointment.id}</TableCell>
-                          <TableCell>{appointment.date}</TableCell>
-                          <TableCell>{appointment.time}</TableCell>
-                          <TableCell>{appointment.doctor}</TableCell>
-                          <TableCell>{appointment.type}</TableCell>
-                          <TableCell>
-                            <Badge
-                              variant={
-                                appointment.status === "Completed"
-                                  ? "success"
-                                  : appointment.status === "Scheduled"
-                                    ? "default"
-                                    : "secondary"
-                              }
-                            >
-                              {appointment.status}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => router.push(`/appointments/${appointment.id}`)}
-                            >
-                              <FileText className="mr-2 h-4 w-4" />
-                              View
-                            </Button>
-                          </TableCell>
+                {selectedAppointment ? (
+                  <div className="mb-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-semibold">Appointment Details</h3>
+                      <Button variant="outline" size="sm" onClick={() => setSelectedAppointmentId(null)}>
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Back to List
+                      </Button>
+                    </div>
+
+                    <Card>
+                      <CardContent className="p-4 space-y-4">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h4 className="font-medium">Appointment #{selectedAppointment.id}</h4>
+                            <p className="text-sm text-muted-foreground">
+                              {selectedAppointment.date} at {selectedAppointment.time}
+                            </p>
+                          </div>
+                          <Badge
+                            variant={
+                              selectedAppointment.status === "Completed"
+                                ? "success"
+                                : selectedAppointment.status === "Scheduled"
+                                  ? "default"
+                                  : "secondary"
+                            }
+                          >
+                            {selectedAppointment.status}
+                          </Badge>
+                        </div>
+
+                        <Separator />
+
+                        <div className="grid gap-4 md:grid-cols-2">
+                          <div>
+                            <h5 className="text-sm font-medium mb-2">Appointment Information</h5>
+                            <div className="space-y-2 text-sm">
+                              <div className="flex items-center gap-2">
+                                <Calendar className="h-4 w-4 text-muted-foreground" />
+                                <span className="font-medium">Date:</span>
+                                <span>{selectedAppointment.date}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Clock className="h-4 w-4 text-muted-foreground" />
+                                <span className="font-medium">Time:</span>
+                                <span>{selectedAppointment.time}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <FileText className="h-4 w-4 text-muted-foreground" />
+                                <span className="font-medium">Type:</span>
+                                <span>{selectedAppointment.type}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div>
+                            <h5 className="text-sm font-medium mb-2">Doctor Information</h5>
+                            <div className="space-y-2 text-sm">
+                              <div className="flex items-center gap-2">
+                                <User className="h-4 w-4 text-muted-foreground" />
+                                <span className="font-medium">Doctor:</span>
+                                <span>{selectedAppointment.doctor}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Stethoscope className="h-4 w-4 text-muted-foreground" />
+                                <span className="font-medium">Specialty:</span>
+                                <span>{selectedAppointment.specialty}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                ) : (
+                  <ResponsiveTable>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Appointment ID</TableHead>
+                          <TableHead>Date</TableHead>
+                          <TableHead>Time</TableHead>
+                          <TableHead>Doctor</TableHead>
+                          <TableHead>Type</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Actions</TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </ResponsiveTable>
+                      </TableHeader>
+                      <TableBody>
+                        {patient.appointments.map((appointment) => (
+                          <TableRow key={appointment.id}>
+                            <TableCell>{appointment.id}</TableCell>
+                            <TableCell>{appointment.date}</TableCell>
+                            <TableCell>{appointment.time}</TableCell>
+                            <TableCell>{appointment.doctor}</TableCell>
+                            <TableCell>{appointment.type}</TableCell>
+                            <TableCell>
+                              <Badge
+                                variant={
+                                  appointment.status === "Completed"
+                                    ? "success"
+                                    : appointment.status === "Scheduled"
+                                      ? "default"
+                                      : "secondary"
+                                }
+                              >
+                                {appointment.status}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setSelectedAppointmentId(appointment.id)}
+                              >
+                                <FileText className="mr-2 h-4 w-4" />
+                                View
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </ResponsiveTable>
+                )}
               </TabsContent>
 
               <TabsContent value="medications" className="pt-4">
@@ -569,20 +662,12 @@ export default function PatientRecordsPage() {
                       <div className="text-lg font-medium">{patient.vitals.heartRate}</div>
                     </div>
                     <div className="rounded-lg border p-3">
-                      <div className="text-xs text-muted-foreground">Temperature</div>
-                      <div className="text-lg font-medium">{patient.vitals.temperature}</div>
-                    </div>
-                    <div className="rounded-lg border p-3">
-                      <div className="text-xs text-muted-foreground">Respiratory Rate</div>
-                      <div className="text-lg font-medium">{patient.vitals.respiratoryRate}</div>
-                    </div>
-                    <div className="rounded-lg border p-3">
                       <div className="text-xs text-muted-foreground">Weight</div>
                       <div className="text-lg font-medium">{patient.vitals.weight}</div>
                     </div>
                     <div className="rounded-lg border p-3">
-                      <div className="text-xs text-muted-foreground">Height</div>
-                      <div className="text-lg font-medium">{patient.vitals.height}</div>
+                      <div className="text-xs text-muted-foreground">Glucose</div>
+                      <div className="text-lg font-medium">{patient.vitals.glucose}</div>
                     </div>
                     <div className="rounded-lg border p-3">
                       <div className="text-xs text-muted-foreground">BMI</div>

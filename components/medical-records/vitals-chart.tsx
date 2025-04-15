@@ -24,8 +24,8 @@ const WHO_STANDARDS = {
     diastolic: { min: 60, max: 80, unit: "mmHg" },
   },
   heartRate: { min: 60, max: 100, unit: "bpm" },
-  temperature: { min: 36.5, max: 37.5, unit: "°C" },
-  respiratoryRate: { min: 12, max: 20, unit: "rpm" },
+  weight: { min: 50, max: 100, unit: "kg" },
+  glucose: { min: 70, max: 100, unit: "mg/dL" },
   bmi: { min: 18.5, max: 24.9, unit: "" },
   oxygenSaturation: { min: 95, max: 100, unit: "%" },
 }
@@ -46,19 +46,19 @@ const mockVitalsHistory = {
     { date: "Apr 2023", value: 76 },
     { date: "May 2023", value: 74 },
   ],
-  temperature: [
-    { date: "Jan 2023", value: 36.8 },
-    { date: "Feb 2023", value: 36.9 },
-    { date: "Mar 2023", value: 37.1 },
-    { date: "Apr 2023", value: 36.7 },
-    { date: "May 2023", value: 36.6 },
+  weight: [
+    { date: "Jan 2023", value: 75.2 },
+    { date: "Feb 2023", value: 74.8 },
+    { date: "Mar 2023", value: 74.5 },
+    { date: "Apr 2023", value: 74.1 },
+    { date: "May 2023", value: 73.6 },
   ],
-  respiratoryRate: [
-    { date: "Jan 2023", value: 16 },
-    { date: "Feb 2023", value: 15 },
-    { date: "Mar 2023", value: 17 },
-    { date: "Apr 2023", value: 16 },
-    { date: "May 2023", value: 16 },
+  glucose: [
+    { date: "Jan 2023", value: 95 },
+    { date: "Feb 2023", value: 92 },
+    { date: "Mar 2023", value: 98 },
+    { date: "Apr 2023", value: 94 },
+    { date: "May 2023", value: 90 },
   ],
   bmi: [
     { date: "Jan 2023", value: 27.1 },
@@ -80,10 +80,8 @@ interface VitalsChartProps {
   currentVitals: {
     bloodPressure: string
     heartRate: string
-    temperature: string
-    respiratoryRate: string
     weight: string
-    height: string
+    glucose: string
     bmi: string
     oxygenSaturation: string
   }
@@ -99,8 +97,8 @@ export function VitalsChart({ currentVitals }: VitalsChartProps) {
       diastolic: Number.parseInt(currentVitals.bloodPressure.split("/")[1]),
     },
     heartRate: Number.parseInt(currentVitals.heartRate),
-    temperature: Number.parseFloat(currentVitals.temperature),
-    respiratoryRate: Number.parseInt(currentVitals.respiratoryRate),
+    weight: Number.parseFloat(currentVitals.weight),
+    glucose: Number.parseInt(currentVitals.glucose),
     bmi: Number.parseFloat(currentVitals.bmi),
     oxygenSaturation: Number.parseInt(currentVitals.oxygenSaturation),
   }
@@ -171,13 +169,25 @@ export function VitalsChart({ currentVitals }: VitalsChartProps) {
       </CardHeader>
       <CardContent>
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-3 md:grid-cols-6">
-            <TabsTrigger value="bloodPressure">Blood Pressure</TabsTrigger>
-            <TabsTrigger value="heartRate">Heart Rate</TabsTrigger>
-            <TabsTrigger value="temperature">Temperature</TabsTrigger>
-            <TabsTrigger value="respiratoryRate">Respiratory</TabsTrigger>
-            <TabsTrigger value="bmi">BMI</TabsTrigger>
-            <TabsTrigger value="oxygenSaturation">O2 Sat</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-6 md:grid-cols-6">
+            <TabsTrigger value="bloodPressure" className="px-1 text-xs md:text-sm">
+              BP
+            </TabsTrigger>
+            <TabsTrigger value="heartRate" className="px-1 text-xs md:text-sm">
+              Heart
+            </TabsTrigger>
+            <TabsTrigger value="weight" className="px-1 text-xs md:text-sm">
+              Weight
+            </TabsTrigger>
+            <TabsTrigger value="glucose" className="px-1 text-xs md:text-sm">
+              Glucose
+            </TabsTrigger>
+            <TabsTrigger value="bmi" className="px-1 text-xs md:text-sm">
+              BMI
+            </TabsTrigger>
+            <TabsTrigger value="oxygenSaturation" className="px-1 text-xs md:text-sm">
+              O2
+            </TabsTrigger>
           </TabsList>
 
           <div className="mt-4 flex flex-col md:flex-row md:items-center md:justify-between">
@@ -185,8 +195,8 @@ export function VitalsChart({ currentVitals }: VitalsChartProps) {
               <h3 className="text-lg font-medium">
                 {activeTab === "bloodPressure" && "Blood Pressure"}
                 {activeTab === "heartRate" && "Heart Rate"}
-                {activeTab === "temperature" && "Temperature"}
-                {activeTab === "respiratoryRate" && "Respiratory Rate"}
+                {activeTab === "weight" && "Weight"}
+                {activeTab === "glucose" && "Glucose"}
                 {activeTab === "bmi" && "Body Mass Index (BMI)"}
                 {activeTab === "oxygenSaturation" && "Oxygen Saturation"}
               </h3>

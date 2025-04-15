@@ -93,11 +93,11 @@ export function DoctorPatients({ doctorId }: DoctorPatientsProps) {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Patient</TableHead>
-            <TableHead>Age/Gender</TableHead>
-            <TableHead>Last Visit</TableHead>
-            <TableHead>Condition</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead className="w-[70%] sm:w-auto">Patient</TableHead>
+            <TableHead className="hidden sm:table-cell">Age/Gender</TableHead>
+            <TableHead className="hidden sm:table-cell">Last Visit</TableHead>
+            <TableHead className="hidden sm:table-cell">Condition</TableHead>
+            <TableHead className="w-[30%] sm:w-auto text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -110,9 +110,9 @@ export function DoctorPatients({ doctorId }: DoctorPatientsProps) {
           ) : (
             doctorPatients.map((patient) => (
               <TableRow key={patient.id}>
-                <TableCell>
-                  <div className="flex items-center gap-3">
-                    <Avatar className="h-9 w-9">
+                <TableCell className="max-w-[180px]">
+                  <div className="flex items-center gap-2">
+                    <Avatar className="h-8 w-8 flex-shrink-0">
                       <AvatarImage src={patient.avatar || "/placeholder.svg"} alt={patient.name} />
                       <AvatarFallback>
                         {patient.name
@@ -121,23 +121,31 @@ export function DoctorPatients({ doctorId }: DoctorPatientsProps) {
                           .join("")}
                       </AvatarFallback>
                     </Avatar>
-                    <div>
-                      <div className="font-medium">{patient.name}</div>
-                      <div className="text-xs text-muted-foreground">{patient.id}</div>
+                    <div className="min-w-0">
+                      <div className="font-medium truncate">{patient.name}</div>
+                      <div className="text-xs text-muted-foreground truncate">{patient.id}</div>
+                      <div className="text-xs sm:hidden mt-1 truncate">
+                        {patient.age} / {patient.gender}
+                      </div>
                     </div>
                   </div>
                 </TableCell>
-                <TableCell>
+                <TableCell className="hidden sm:table-cell">
                   {patient.age} / {patient.gender}
                 </TableCell>
-                <TableCell>{patient.lastVisit}</TableCell>
-                <TableCell>
+                <TableCell className="hidden sm:table-cell">{patient.lastVisit}</TableCell>
+                <TableCell className="hidden sm:table-cell">
                   <Badge variant="outline">{patient.condition}</Badge>
                 </TableCell>
                 <TableCell className="text-right">
-                  <Button variant="ghost" size="sm" onClick={() => router.push(`/patients/${patient.id}`)}>
-                    <FileText className="mr-2 h-4 w-4" />
-                    View Records
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => router.push(`/patients/${patient.id}`)}
+                  >
+                    <FileText className="h-4 w-4" />
+                    <span className="sr-only">View Records</span>
                   </Button>
                 </TableCell>
               </TableRow>

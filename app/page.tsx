@@ -4,12 +4,12 @@ import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { MainLayout } from "@/components/layout/main-layout"
-import { Activity, Calendar, DollarSign, Users } from "lucide-react"
+import { Activity, Calendar, DollarSign } from "lucide-react"
 import { AppointmentChart } from "@/components/dashboard/appointment-chart"
-import { RecentPatients } from "@/components/dashboard/recent-patients"
 import { UpcomingAppointments } from "@/components/dashboard/upcoming-appointments"
 import { useAuth } from "@/contexts/auth-context"
 import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export default function DashboardPage() {
   const { user } = useAuth()
@@ -30,96 +30,83 @@ export default function DashboardPage() {
   return (
     <MainLayout title="Dashboard">
       <div className="flex flex-col gap-6">
-        <div className="flex overflow-x-auto pb-2 gap-4 -mx-4 px-4 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-4">
-          <Card className="min-w-[160px] flex-shrink-0 md:min-w-0">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+          <Card className="col-span-1">
             <CardContent className="p-4 flex flex-col items-center md:items-start">
-              <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 mb-3">
-                <Users className="h-5 w-5 text-primary" />
-              </div>
-              <div className="text-xs text-muted-foreground">Total Patients</div>
-              <div className="text-2xl font-bold">1,248</div>
-              <div className="text-xs text-green-500">+12% from last month</div>
-            </CardContent>
-          </Card>
-
-          <Card className="min-w-[160px] flex-shrink-0 md:min-w-0">
-            <CardContent className="p-4 flex flex-col items-center md:items-start">
-              <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 mb-3">
-                <Calendar className="h-5 w-5 text-primary" />
-              </div>
-              <div className="text-xs text-muted-foreground">Today's Appointments</div>
               <div className="text-2xl font-bold">24</div>
               <div className="text-xs text-muted-foreground">6 remaining</div>
+              <div className="flex items-center mt-2">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 mr-2">
+                  <Calendar className="h-4 w-4 text-primary" />
+                </div>
+                <div className="text-xs text-muted-foreground">Today's Appointments</div>
+              </div>
             </CardContent>
           </Card>
 
-          <Card className="min-w-[160px] flex-shrink-0 md:min-w-0">
+          <Card className="col-span-1">
             <CardContent className="p-4 flex flex-col items-center md:items-start">
-              <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 mb-3">
-                <DollarSign className="h-5 w-5 text-primary" />
-              </div>
-              <div className="text-xs text-muted-foreground">Total Revenue</div>
               <div className="text-2xl font-bold">$24,568</div>
               <div className="text-xs text-green-500">+8.2% from last month</div>
+              <div className="flex items-center mt-2">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 mr-2">
+                  <DollarSign className="h-4 w-4 text-primary" />
+                </div>
+                <div className="text-xs text-muted-foreground">Total Revenue</div>
+              </div>
             </CardContent>
           </Card>
 
-          <Card className="min-w-[160px] flex-shrink-0 md:min-w-0">
+          <Card className="col-span-1">
             <CardContent className="p-4 flex flex-col items-center md:items-start">
-              <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 mb-3">
-                <Activity className="h-5 w-5 text-primary" />
-              </div>
-              <div className="text-xs text-muted-foreground">Active Staff</div>
               <div className="text-2xl font-bold">18</div>
               <div className="text-xs text-muted-foreground">3 on leave</div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-2">
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h3 className="text-lg font-semibold">Appointment Statistics</h3>
-                  <p className="text-sm text-muted-foreground">Last 30 days</p>
+              <div className="flex items-center mt-2">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 mr-2">
+                  <Activity className="h-4 w-4 text-primary" />
                 </div>
-                <Button variant="outline" size="sm">
-                  View All
-                </Button>
+                <div className="text-xs text-muted-foreground">Active Staff</div>
               </div>
-              <AppointmentChart />
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h3 className="text-lg font-semibold">Upcoming Appointments</h3>
-                  <p className="text-sm text-muted-foreground">Next 5 scheduled</p>
-                </div>
-                <Button variant="outline" size="sm">
-                  View All
-                </Button>
-              </div>
-              <UpcomingAppointments />
             </CardContent>
           </Card>
         </div>
 
         <Card>
           <CardContent className="p-4">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h3 className="text-lg font-semibold">Recent Patients</h3>
-                <p className="text-sm text-muted-foreground">Recently registered</p>
+            <Tabs defaultValue="upcoming" className="w-full">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="text-lg font-semibold">Appointments</h3>
+                  <p className="text-sm text-muted-foreground">Manage your clinic schedule</p>
+                </div>
+                <Button variant="outline" size="sm" onClick={() => router.push("/appointments")}>
+                  View All
+                </Button>
               </div>
-              <Button variant="outline" size="sm">
-                View All
-              </Button>
-            </div>
-            <RecentPatients />
+
+              <TabsList className="w-full grid grid-cols-2 h-12 mb-4">
+                <TabsTrigger
+                  value="upcoming"
+                  className="text-sm py-3 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                >
+                  Upcoming Appointments
+                </TabsTrigger>
+                <TabsTrigger
+                  value="statistics"
+                  className="text-sm py-3 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                >
+                  Appointment Statistics
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="upcoming" className="mt-0">
+                <UpcomingAppointments />
+              </TabsContent>
+
+              <TabsContent value="statistics" className="mt-0">
+                <AppointmentChart />
+              </TabsContent>
+            </Tabs>
           </CardContent>
         </Card>
       </div>

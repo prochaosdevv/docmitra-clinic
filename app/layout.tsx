@@ -11,7 +11,7 @@ import { ProtectedRoute } from "@/components/auth/protected-route"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "MediCare - Clinic Management System",
+  title: "DocMitr - Clinic Management System",
   description: "A comprehensive clinic management system",
     generator: 'v0.dev'
 }
