@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/components/ui/use-toast"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -56,7 +57,11 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 p-4">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4 relative">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
+
       <div className="w-full max-w-sm">
         <div className="mb-6 flex flex-col items-center">
           <div className="relative h-20 w-40 mb-2">
@@ -65,7 +70,7 @@ export default function LoginPage() {
           <h1 className="text-xl font-semibold text-blue-600">Healthcare Management</h1>
         </div>
 
-        <div className="rounded-lg bg-white p-6 shadow-md">
+        <div className="rounded-lg bg-card p-6 shadow-md border">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
@@ -95,8 +100,8 @@ export default function LoginPage() {
           </form>
         </div>
 
-        <div className="mt-6 rounded-lg bg-white p-4 shadow-md">
-          <p className="text-sm font-medium text-gray-700 mb-2">Demo Accounts:</p>
+        <div className="mt-6 rounded-lg bg-card p-4 shadow-md border">
+          <p className="text-sm font-medium mb-2">Demo Accounts:</p>
           <div className="space-y-2">
             <Button
               variant="outline"
@@ -105,7 +110,7 @@ export default function LoginPage() {
               onClick={() => handleDemoLogin("admin@docmitr.com")}
             >
               <span>Admin</span>
-              <span className="text-gray-500">admin@docmitr.com</span>
+              <span className="text-muted-foreground">admin@docmitr.com</span>
             </Button>
             <Button
               variant="outline"
@@ -114,10 +119,10 @@ export default function LoginPage() {
               onClick={() => handleDemoLogin("doctor@docmitr.com")}
             >
               <span>Doctor</span>
-              <span className="text-gray-500">doctor@docmitr.com</span>
+              <span className="text-muted-foreground">doctor@docmitr.com</span>
             </Button>
           </div>
-          <p className="mt-2 text-xs text-gray-500">Password for all accounts: password123</p>
+          <p className="mt-2 text-xs text-muted-foreground">Password for all accounts: password123</p>
         </div>
       </div>
     </div>
