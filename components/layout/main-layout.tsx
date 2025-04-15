@@ -33,7 +33,7 @@ export function MainLayout({ children }: MainLayoutProps) {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex flex-col w-full md:ml-64">
+      <div className="flex flex-col w-full">
         {/* Mobile Header - visible only on mobile */}
         <MobileHeader />
 

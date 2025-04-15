@@ -19,21 +19,42 @@ AccordionItem.displayName = "AccordionItem"
 const AccordionTrigger = React.forwardRef<
   React.ElementRef<typeof AccordionPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger>
->(({ className, children, ...props }, ref) => (
-  <AccordionPrimitive.Header className="flex">
-    <AccordionPrimitive.Trigger
-      ref={ref}
-      className={cn(
-        "flex flex-1 items-center justify-between py-4 font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180",
-        className,
-      )}
-      {...props}
-    >
-      {children}
-      <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
-    </AccordionPrimitive.Trigger>
-  </AccordionPrimitive.Header>
-))
+>(({ className, children, ...props }, ref) => {
+  // Array of background colors to choose from
+  const bgColors = [
+    "bg-blue-100",
+    "bg-green-100",
+    "bg-purple-100",
+    "bg-pink-100",
+    "bg-yellow-100",
+    "bg-orange-100",
+    "bg-teal-100",
+    "bg-indigo-100",
+    "bg-red-100",
+    "bg-cyan-100",
+  ]
+
+  // Generate a random index to select a color
+  const randomColorIndex = React.useMemo(() => Math.floor(Math.random() * bgColors.length), [])
+
+  return (
+    <AccordionPrimitive.Header className="flex">
+      <AccordionPrimitive.Trigger
+        ref={ref}
+        className={cn(
+          "flex flex-1 items-center justify-between py-4 font-medium transition-all rounded-md",
+          "hover:brightness-95 [&[data-state=open]>svg]:rotate-180",
+          bgColors[randomColorIndex],
+          className,
+        )}
+        {...props}
+      >
+        {children}
+        <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
+      </AccordionPrimitive.Trigger>
+    </AccordionPrimitive.Header>
+  )
+})
 AccordionTrigger.displayName = AccordionPrimitive.Trigger.displayName
 
 const AccordionContent = React.forwardRef<
