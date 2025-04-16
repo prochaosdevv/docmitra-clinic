@@ -168,7 +168,7 @@ export function AppointmentsList({ filter }: AppointmentsListProps) {
                       <Badge
                         variant={
                           appointment.status === "Confirmed"
-                            ? "default"
+                            ? "confirmed"
                             : appointment.status === "Completed"
                               ? "success"
                               : appointment.status === "Cancelled"

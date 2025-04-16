@@ -84,7 +84,7 @@ export function UpcomingAppointments() {
                 {appointment.date}, {appointment.time}
               </div>
               <Badge
-                variant={appointment.status === "Confirmed" ? "default" : "secondary"}
+                variant={appointment.status === "Confirmed" ? "confirmed" : "secondary"}
                 className="text-xs px-1.5 py-0"
               >
                 {appointment.status}

@@ -1,6 +1,7 @@
 "use client"
 
 import type React from "react"
+import { useState } from "react"
 import { MobileHeader } from "@/components/mobile-header"
 import { MobileNavigation } from "@/components/mobile-navigation"
 import { Sidebar } from "@/components/layout/sidebar"
@@ -8,12 +9,17 @@ import { Bell } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { PullToRefresh } from "@/components/ui/pull-to-refresh"
+import { useToast } from "@/components/ui/use-toast"
 
 interface MainLayoutProps {
   children: React.ReactNode
 }
 
 export function MainLayout({ children }: MainLayoutProps) {
+  const { toast } = useToast()
+  const [isRefreshing, setIsRefreshing] = useState(false)
+
   // Mock notifications data
   const notifications = [
     { id: 1, message: "New appointment scheduled", time: "10 mins ago" },
@@ -22,6 +28,25 @@ export function MainLayout({ children }: MainLayoutProps) {
     { id: 4, message: "Lab results available for Patient #1234", time: "2 hours ago" },
     { id: 5, message: "Staff meeting at 3:00 PM", time: "3 hours ago" },
   ]
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true)
+
+    // Simulate a refresh delay
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+
+    // In a real app, you would fetch fresh data here
+    // For example: await fetchLatestData()
+
+    setIsRefreshing(false)
+
+    // Show a toast notification
+    toast({
+      title: "Refreshed",
+      description: "Content has been updated",
+      duration: 2000,
+    })
+  }
 
   return (
     <div className="flex min-h-screen bg-muted/30">
@@ -78,8 +103,10 @@ export function MainLayout({ children }: MainLayoutProps) {
           </div>
         </header>
 
-        {/* Page Content */}
-        <main className="flex-1 px-4 py-4 pb-20 md:p-6 md:pb-6">{children}</main>
+        {/* Page Content with Pull to Refresh */}
+        <PullToRefresh onRefresh={handleRefresh}>
+          <main className="flex-1 px-4 py-4 pb-20 md:p-6 md:pb-6">{children}</main>
+        </PullToRefresh>
 
         {/* Mobile Navigation - visible only on mobile */}
         <MobileNavigation />

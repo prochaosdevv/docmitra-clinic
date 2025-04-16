@@ -7,9 +7,19 @@ import { Calendar, Home, Plus, User, Users } from "lucide-react"
 export function MobileNavigation() {
   const pathname = usePathname()
 
-  const isActive = (path: string) => {
-    return pathname === path
+  // Updated isActive function to consider dashboard-related paths
+  const isActive = (path: string, additionalPaths: string[] = []) => {
+    if (path === pathname) return true
+    if (additionalPaths.some((p) => pathname === p)) return true
+    return false
   }
+
+  // Define the active and inactive colors
+  const activeColor = "text-blue-500"
+  const inactiveColor = "text-muted-foreground"
+
+  // Dashboard-related paths that should highlight the Home icon
+  const homePaths = ["/", "/dashboard", "/doctor-dashboard"]
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-20 bg-background border-t md:hidden">
@@ -17,7 +27,7 @@ export function MobileNavigation() {
         <Link
           href="/"
           className={`flex flex-col items-center justify-center w-full h-full ${
-            isActive("/") ? "text-primary" : "text-muted-foreground"
+            isActive("/", homePaths) ? activeColor : inactiveColor
           }`}
         >
           <Home className="h-5 w-5" />
@@ -27,7 +37,7 @@ export function MobileNavigation() {
         <Link
           href="/appointments"
           className={`flex flex-col items-center justify-center w-full h-full ${
-            isActive("/appointments") ? "text-primary" : "text-muted-foreground"
+            isActive("/appointments") ? activeColor : inactiveColor
           }`}
         >
           <Calendar className="h-5 w-5" />
@@ -35,7 +45,7 @@ export function MobileNavigation() {
         </Link>
 
         <div className="flex items-center justify-center w-full h-full">
-          <button className="flex items-center justify-center w-12 h-12 bg-primary text-primary-foreground rounded-full shadow-lg">
+          <button className="flex items-center justify-center w-12 h-12 bg-blue-500 text-primary-foreground rounded-full shadow-lg">
             <Plus className="h-6 w-6" />
           </button>
         </div>
@@ -43,7 +53,7 @@ export function MobileNavigation() {
         <Link
           href="/patients"
           className={`flex flex-col items-center justify-center w-full h-full ${
-            isActive("/patients") ? "text-primary" : "text-muted-foreground"
+            isActive("/patients") ? activeColor : inactiveColor
           }`}
         >
           <Users className="h-5 w-5" />
@@ -53,7 +63,7 @@ export function MobileNavigation() {
         <Link
           href="/profile"
           className={`flex flex-col items-center justify-center w-full h-full ${
-            isActive("/profile") ? "text-primary" : "text-muted-foreground"
+            isActive("/profile") ? activeColor : inactiveColor
           }`}
         >
           <User className="h-5 w-5" />

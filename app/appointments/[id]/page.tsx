@@ -327,12 +327,19 @@ export default function AppointmentDetailsPage() {
                 <Badge
                   variant={
                     appointment.status === "Confirmed"
-                      ? "default"
+                      ? "primary"
                       : appointment.status === "Completed"
                         ? "success"
                         : appointment.status === "Cancelled"
                           ? "destructive"
                           : "secondary"
+                  }
+                  className={
+                    appointment.status === "Confirmed"
+                      ? "bg-blue-500 hover:bg-blue-600 text-white"
+                      : appointment.status === "Completed" || appointment.status === "Cancelled"
+                        ? "text-white"
+                        : ""
                   }
                 >
                   {appointment.status}

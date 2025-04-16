@@ -43,7 +43,7 @@ const AccordionTrigger = React.forwardRef<
         ref={ref}
         className={cn(
           "flex flex-1 items-center justify-between py-4 font-medium transition-all rounded-md",
-          "hover:brightness-95 [&[data-state=open]>svg]:rotate-180",
+          "hover:brightness-95 [&[data-state=open]>svg]:rotate-180 dark:text-black",
           bgColors[randomColorIndex],
           className,
         )}

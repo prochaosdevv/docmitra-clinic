@@ -123,7 +123,7 @@ export function DoctorAppointments({ doctorId }: DoctorAppointmentsProps) {
               <Badge
                 variant={
                   appointment.status === "Upcoming"
-                    ? "default"
+                    ? "confirmed"
                     : appointment.status === "Scheduled"
                       ? "outline"
                       : "secondary"
