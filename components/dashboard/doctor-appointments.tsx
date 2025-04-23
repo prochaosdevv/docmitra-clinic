@@ -5,14 +5,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { FileText, Calendar, Clock } from "lucide-react"
 
-// Update the APPOINTMENTS mock data to include patient age
+// Update the APPOINTMENTS mock data with Indian names in English
 const APPOINTMENTS = [
   {
     id: "A-1001",
-    patientName: "John Doe",
+    patientName: "Amit Sharma",
     patientId: "P-2001",
     patientAge: 45,
-    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=John Doe",
+    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Amit Sharma",
     date: "Today",
     time: "10:00 AM",
     type: "Check-up",
@@ -21,10 +21,10 @@ const APPOINTMENTS = [
   },
   {
     id: "A-1002",
-    patientName: "Jane Smith",
+    patientName: "Priya Patel",
     patientId: "P-2002",
     patientAge: 32,
-    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Jane Smith",
+    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Priya Patel",
     date: "Today",
     time: "11:30 AM",
     type: "Follow-up",
@@ -33,10 +33,10 @@ const APPOINTMENTS = [
   },
   {
     id: "A-1003",
-    patientName: "Robert Brown",
+    patientName: "Rahul Verma",
     patientId: "P-2003",
     patientAge: 28,
-    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Robert Brown",
+    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Rahul Verma",
     date: "Today",
     time: "2:15 PM",
     type: "Consultation",
@@ -45,10 +45,10 @@ const APPOINTMENTS = [
   },
   {
     id: "A-1004",
-    patientName: "Emily Johnson",
+    patientName: "Neha Gupta",
     patientId: "P-2004",
     patientAge: 52,
-    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Emily Johnson",
+    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Neha Gupta",
     date: "Tomorrow",
     time: "9:00 AM",
     type: "Check-up",
@@ -57,10 +57,10 @@ const APPOINTMENTS = [
   },
   {
     id: "A-1005",
-    patientName: "Michael Wilson",
+    patientName: "Vikas Mehta",
     patientId: "P-2005",
     patientAge: 41,
-    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Michael Wilson",
+    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Vikas Mehta",
     date: "Tomorrow",
     time: "3:30 PM",
     type: "Follow-up",
@@ -69,10 +69,10 @@ const APPOINTMENTS = [
   },
   {
     id: "A-1006",
-    patientName: "Sarah Davis",
+    patientName: "Anushka Singh",
     patientId: "P-2006",
     patientAge: 36,
-    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Sarah Davis",
+    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Anushka Singh",
     date: "May 20, 2023",
     time: "10:45 AM",
     type: "Consultation",

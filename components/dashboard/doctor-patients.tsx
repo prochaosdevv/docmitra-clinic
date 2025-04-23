@@ -8,12 +8,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { FileText } from "lucide-react"
 import { ResponsiveTable } from "@/components/ui/responsive-table"
 
-// Mock data for doctor patients
+// Mock data for doctor patients with Indian names in English
 const PATIENTS = [
   {
     id: "P-1001",
-    name: "John Doe",
-    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=John Doe",
+    name: "Amit Sharma",
+    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Amit Sharma",
     age: 45,
     gender: "Male",
     lastVisit: "May 15, 2023",
@@ -23,8 +23,8 @@ const PATIENTS = [
   },
   {
     id: "P-1002",
-    name: "Jane Smith",
-    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Jane Smith",
+    name: "Priya Patel",
+    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Priya Patel",
     age: 32,
     gender: "Female",
     lastVisit: "May 10, 2023",
@@ -34,8 +34,8 @@ const PATIENTS = [
   },
   {
     id: "P-1003",
-    name: "Robert Brown",
-    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Robert Brown",
+    name: "Rahul Verma",
+    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Rahul Verma",
     age: 28,
     gender: "Male",
     lastVisit: "April 28, 2023",
@@ -45,8 +45,8 @@ const PATIENTS = [
   },
   {
     id: "P-1004",
-    name: "Emily Johnson",
-    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Emily Johnson",
+    name: "Neha Gupta",
+    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Neha Gupta",
     age: 52,
     gender: "Female",
     lastVisit: "May 5, 2023",
@@ -56,8 +56,8 @@ const PATIENTS = [
   },
   {
     id: "P-1005",
-    name: "Michael Wilson",
-    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Michael Wilson",
+    name: "Vikas Mehta",
+    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Vikas Mehta",
     age: 41,
     gender: "Male",
     lastVisit: "May 12, 2023",
@@ -67,8 +67,8 @@ const PATIENTS = [
   },
   {
     id: "P-1006",
-    name: "Sarah Davis",
-    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Sarah Davis",
+    name: "Anushka Singh",
+    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Anushka Singh",
     age: 36,
     gender: "Female",
     lastVisit: "May 8, 2023",

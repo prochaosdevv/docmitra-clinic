@@ -46,7 +46,7 @@ export default function DashboardPage() {
 
           <Card className="col-span-1">
             <CardContent className="p-4 flex flex-col items-center md:items-start">
-              <div className="text-2xl font-bold">$24,568</div>
+              <div className="text-2xl font-bold">₹24,568</div>
               <div className="text-xs text-green-500">+8.2% from last month</div>
               <div className="flex items-center mt-2">
                 <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 mr-2">

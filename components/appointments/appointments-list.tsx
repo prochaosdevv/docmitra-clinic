@@ -7,13 +7,13 @@ import { Input } from "@/components/ui/input"
 import { Search } from "lucide-react"
 import Link from "next/link"
 
-// Mock appointment data
+// Mock appointment data with Indian names in English
 const appointments = [
   {
     id: "A-1001",
-    patientName: "Emma Johnson",
+    patientName: "Amit Sharma",
     patientId: "P-1001",
-    doctorName: "Dr. Michael Chen",
+    doctorName: "Dr. Aditya Kapoor",
     specialty: "Cardiology",
     date: "May 15, 2023",
     time: "10:00 AM",
@@ -22,9 +22,9 @@ const appointments = [
   },
   {
     id: "A-1002",
-    patientName: "James Wilson",
+    patientName: "Priya Patel",
     patientId: "P-1002",
-    doctorName: "Dr. Sarah Lee",
+    doctorName: "Dr. Sanjana Desai",
     specialty: "Dermatology",
     date: "May 15, 2023",
     time: "11:30 AM",
@@ -33,9 +33,9 @@ const appointments = [
   },
   {
     id: "A-1003",
-    patientName: "Sophia Martinez",
+    patientName: "Rahul Verma",
     patientId: "P-1003",
-    doctorName: "Dr. Robert Johnson",
+    doctorName: "Dr. Vikram Mehta",
     specialty: "Neurology",
     date: "May 15, 2023",
     time: "2:15 PM",
@@ -44,9 +44,9 @@ const appointments = [
   },
   {
     id: "A-1004",
-    patientName: "William Taylor",
+    patientName: "Neha Gupta",
     patientId: "P-1004",
-    doctorName: "Dr. Emily Davis",
+    doctorName: "Dr. Anjali Sharma",
     specialty: "Pediatrics",
     date: "Today",
     time: "9:00 AM",
@@ -55,9 +55,9 @@ const appointments = [
   },
   {
     id: "A-1005",
-    patientName: "Olivia Brown",
+    patientName: "Vikas Mehta",
     patientId: "P-1005",
-    doctorName: "Dr. James Wilson",
+    doctorName: "Dr. Rajesh Khanna",
     specialty: "Orthopedics",
     date: "Today",
     time: "3:30 PM",
@@ -66,9 +66,9 @@ const appointments = [
   },
   {
     id: "A-1006",
-    patientName: "Benjamin Davis",
+    patientName: "Anushka Singh",
     patientId: "P-1006",
-    doctorName: "Dr. Lisa Wang",
+    doctorName: "Dr. Preeti Verma",
     specialty: "Ophthalmology",
     date: "May 17, 2023",
     time: "10:45 AM",
@@ -77,9 +77,9 @@ const appointments = [
   },
   {
     id: "A-1007",
-    patientName: "Mia Garcia",
+    patientName: "Sanjay Agarwal",
     patientId: "P-1007",
-    doctorName: "Dr. David Kim",
+    doctorName: "Dr. Amit Gupta",
     specialty: "Dentistry",
     date: "May 17, 2023",
     time: "1:00 PM",
@@ -88,9 +88,9 @@ const appointments = [
   },
   {
     id: "A-1008",
-    patientName: "Ethan Rodriguez",
+    patientName: "Deepika Chaudhary",
     patientId: "P-1008",
-    doctorName: "Dr. Jennifer Smith",
+    doctorName: "Dr. Sunil Sharma",
     specialty: "General Medicine",
     date: "May 18, 2023",
     time: "11:15 AM",
