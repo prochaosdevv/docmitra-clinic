@@ -11,8 +11,8 @@ import Link from "next/link"
 const patients = [
   {
     id: "P-1001",
-    name: "Amit Sharma",
-    email: "amit.s@example.com",
+    name: "Ravi Sharma",
+    email: "ravi.s@example.com",
     phone: "+91 98765 43210",
     dateOfBirth: "May 15, 1985",
     lastVisit: "Apr 23, 2023",
@@ -20,8 +20,8 @@ const patients = [
   },
   {
     id: "P-1002",
-    name: "Priya Patel",
-    email: "priya.p@example.com",
+    name: "Sunita Patel",
+    email: "sunita.p@example.com",
     phone: "+91 87654 32109",
     dateOfBirth: "Jan 28, 1976",
     lastVisit: "Apr 24, 2023",
@@ -29,8 +29,8 @@ const patients = [
   },
   {
     id: "P-1003",
-    name: "Rahul Verma",
-    email: "rahul.v@example.com",
+    name: "Mohan Verma",
+    email: "mohan.v@example.com",
     phone: "+91 76543 21098",
     dateOfBirth: "Nov 12, 1990",
     lastVisit: "Apr 25, 2023",
@@ -38,8 +38,8 @@ const patients = [
   },
   {
     id: "P-1004",
-    name: "Neha Gupta",
-    email: "neha.g@example.com",
+    name: "Deepa Gupta",
+    email: "deepa.g@example.com",
     phone: "+91 65432 10987",
     dateOfBirth: "Mar 3, 1982",
     lastVisit: "Apr 26, 2023",
@@ -47,8 +47,8 @@ const patients = [
   },
   {
     id: "P-1005",
-    name: "Vikas Mehta",
-    email: "vikas.m@example.com",
+    name: "Suresh Mehta",
+    email: "suresh.m@example.com",
     phone: "+91 54321 09876",
     dateOfBirth: "Jul 22, 1995",
     lastVisit: "Apr 27, 2023",
@@ -56,8 +56,8 @@ const patients = [
   },
   {
     id: "P-1006",
-    name: "Anushka Singh",
-    email: "anushka.s@example.com",
+    name: "Pooja Singh",
+    email: "pooja.s@example.com",
     phone: "+91 43210 98765",
     dateOfBirth: "Sep 8, 1970",
     lastVisit: "Apr 28, 2023",
@@ -65,8 +65,8 @@ const patients = [
   },
   {
     id: "P-1007",
-    name: "Sanjay Agarwal",
-    email: "sanjay.a@example.com",
+    name: "Anil Agarwal",
+    email: "anil.a@example.com",
     phone: "+91 32109 87654",
     dateOfBirth: "Feb 17, 1988",
     lastVisit: "Apr 29, 2023",
@@ -74,8 +74,8 @@ const patients = [
   },
   {
     id: "P-1008",
-    name: "Deepika Chaudhary",
-    email: "deepika.c@example.com",
+    name: "Kavita Chaudhary",
+    email: "kavita.c@example.com",
     phone: "+91 21098 76543",
     dateOfBirth: "Dec 5, 1992",
     lastVisit: "Apr 30, 2023",

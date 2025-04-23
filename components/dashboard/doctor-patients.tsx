@@ -12,8 +12,8 @@ import { ResponsiveTable } from "@/components/ui/responsive-table"
 const PATIENTS = [
   {
     id: "P-1001",
-    name: "Amit Sharma",
-    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Amit Sharma",
+    name: "Ravi Sharma",
+    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Ravi Sharma",
     age: 45,
     gender: "Male",
     lastVisit: "May 15, 2023",
@@ -23,8 +23,8 @@ const PATIENTS = [
   },
   {
     id: "P-1002",
-    name: "Priya Patel",
-    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Priya Patel",
+    name: "Sunita Patel",
+    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Sunita Patel",
     age: 32,
     gender: "Female",
     lastVisit: "May 10, 2023",
@@ -34,8 +34,8 @@ const PATIENTS = [
   },
   {
     id: "P-1003",
-    name: "Rahul Verma",
-    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Rahul Verma",
+    name: "Mohan Verma",
+    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Mohan Verma",
     age: 28,
     gender: "Male",
     lastVisit: "April 28, 2023",
@@ -45,8 +45,8 @@ const PATIENTS = [
   },
   {
     id: "P-1004",
-    name: "Neha Gupta",
-    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Neha Gupta",
+    name: "Deepa Gupta",
+    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Deepa Gupta",
     age: 52,
     gender: "Female",
     lastVisit: "May 5, 2023",
@@ -56,8 +56,8 @@ const PATIENTS = [
   },
   {
     id: "P-1005",
-    name: "Vikas Mehta",
-    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Vikas Mehta",
+    name: "Suresh Mehta",
+    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Suresh Mehta",
     age: 41,
     gender: "Male",
     lastVisit: "May 12, 2023",
@@ -67,8 +67,8 @@ const PATIENTS = [
   },
   {
     id: "P-1006",
-    name: "Anushka Singh",
-    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Anushka Singh",
+    name: "Pooja Singh",
+    avatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Pooja Singh",
     age: 36,
     gender: "Female",
     lastVisit: "May 8, 2023",

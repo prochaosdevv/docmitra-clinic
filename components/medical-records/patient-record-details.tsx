@@ -31,16 +31,16 @@ export function PatientRecordDetails() {
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-4">
               <Avatar className="h-16 w-16">
-                <AvatarImage src="/thoughtful-artist.png" alt="Emma Johnson" />
-                <AvatarFallback>EJ</AvatarFallback>
+                <AvatarImage src="/thoughtful-artist.png" alt="Amit Sharma" />
+                <AvatarFallback>AS</AvatarFallback>
               </Avatar>
               <div>
-                <h3 className="text-xl font-bold">Emma Johnson</h3>
+                <h3 className="text-xl font-bold">Amit Sharma</h3>
                 <div className="text-sm text-muted-foreground">Patient ID: P-1001</div>
                 <div className="mt-1 flex items-center gap-4">
                   <div className="text-sm">DOB: May 15, 1985</div>
                   <div className="text-sm">Age: 38</div>
-                  <Badge>Female</Badge>
+                  <Badge>Male</Badge>
                 </div>
               </div>
             </div>
@@ -87,7 +87,7 @@ export function PatientRecordDetails() {
               </div>
               <div>
                 <h4 className="text-sm font-medium">Attending Physician</h4>
-                <p className="text-sm text-muted-foreground">Dr. Michael Chen, Cardiology</p>
+                <p className="text-sm text-muted-foreground">Dr. Rajesh Patel, Cardiology</p>
               </div>
             </TabsContent>
             <TabsContent value="vitals" className="space-y-4 pt-4">
@@ -174,7 +174,7 @@ export function PatientRecordDetails() {
                 <h4 className="text-sm font-medium">Clinical Notes</h4>
                 <div className="mt-2 rounded-lg border p-3 text-sm">
                   <p className="mb-2">
-                    <span className="font-medium">Apr 23, 2023 - Dr. Michael Chen:</span> Patient presents with elevated
+                    <span className="font-medium">Apr 23, 2023 - Dr. Rajesh Patel:</span> Patient presents with elevated
                     blood pressure readings over the past 3 months. Home measurements averaging 140/90 mmHg. No family
                     history of cardiovascular disease. Patient reports high-stress work environment and inconsistent
                     exercise routine.
@@ -194,7 +194,7 @@ export function PatientRecordDetails() {
                 <h4 className="text-sm font-medium">Previous Visit Notes</h4>
                 <div className="mt-2 rounded-lg border p-3 text-sm">
                   <p className="mb-2">
-                    <span className="font-medium">Jan 15, 2023 - Dr. Jennifer Smith:</span> Annual physical examination.
+                    <span className="font-medium">Jan 15, 2023 - Dr. Anjali Desai:</span> Annual physical examination.
                     Patient reports good overall health. BP slightly elevated at 135/82 mmHg. Recommended monitoring BP
                     at home and returning for follow-up if consistently elevated.
                   </p>
@@ -207,7 +207,7 @@ export function PatientRecordDetails() {
       <CardFooter className="border-t">
         <div className="flex w-full items-center justify-between">
           <div className="text-sm text-muted-foreground">
-            Created by: <span className="font-medium">Dr. Michael Chen</span>
+            Created by: <span className="font-medium">Dr. Rajesh Patel</span>
           </div>
           <Button>Edit Record</Button>
         </div>
