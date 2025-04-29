@@ -1,30 +1,93 @@
-# Clone and Clean Admin
+# Clinic Management Backend Server
 
-*Automatically synced with your [v0.dev](https://v0.dev) deployments*
+This is a Node.js backend server for the Clinic Management System. It provides all the necessary API endpoints for the frontend to interact with.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/himotechglobals-projects/v0-clone-and-clean-admin)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/0NaId7fxF82)
+## Setup
 
-## Overview
+1. Clone this repository
+2. Install dependencies:
+   \`\`\`
+   npm install
+   \`\`\`
+3. Create a `.env` file in the root directory with the following content:
+   \`\`\`
+   PORT=5000
+   JWT_SECRET=your_jwt_secret_key_here
+   \`\`\`
+4. Seed the database:
+   \`\`\`
+   npm run seed
+   \`\`\`
+5. Start the server:
+   \`\`\`
+   npm run dev
+   \`\`\`
 
-This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
+## API Endpoints
 
-## Deployment
+### Authentication
+- `POST /api/auth/login` - Login
+- `POST /api/auth/register` - Register a new user
+- `GET /api/auth/me` - Get current user
+- `POST /api/auth/logout` - Logout
 
-Your project is live at:
+### Patients
+- `GET /api/patients` - Get all patients
+- `GET /api/patients/:id` - Get patient by ID
+- `POST /api/patients` - Create a new patient
+- `PUT /api/patients/:id` - Update a patient
+- `DELETE /api/patients/:id` - Delete a patient
+- `GET /api/patients/:id/appointments` - Get patient appointments
+- `GET /api/patients/:id/medical-records` - Get patient medical records
+- `GET /api/patients/:id/vitals` - Get patient vitals
 
-**[https://vercel.com/himotechglobals-projects/v0-clone-and-clean-admin](https://vercel.com/himotechglobals-projects/v0-clone-and-clean-admin)**
+### Doctors
+- `GET /api/doctors` - Get all doctors
+- `GET /api/doctors/:id` - Get doctor by ID
+- `POST /api/doctors` - Create a new doctor
+- `PUT /api/doctors/:id` - Update a doctor
+- `DELETE /api/doctors/:id` - Delete a doctor
+- `GET /api/doctors/:id/appointments` - Get doctor appointments
+- `GET /api/doctors/:id/patients` - Get doctor patients
 
-## Build your app
+### Appointments
+- `GET /api/appointments` - Get all appointments
+- `GET /api/appointments/:id` - Get appointment by ID
+- `POST /api/appointments` - Create a new appointment
+- `PUT /api/appointments/:id` - Update an appointment
+- `DELETE /api/appointments/:id` - Delete an appointment
 
-Continue building your app on:
+### Staff
+- `GET /api/staff` - Get all staff
+- `GET /api/staff/:id` - Get staff by ID
+- `POST /api/staff` - Create a new staff
+- `PUT /api/staff/:id` - Update a staff
+- `DELETE /api/staff/:id` - Delete a staff
 
-**[https://v0.dev/chat/projects/0NaId7fxF82](https://v0.dev/chat/projects/0NaId7fxF82)**
+### Medical Records
+- `GET /api/medical-records` - Get all medical records
+- `GET /api/medical-records/:id` - Get medical record by ID
+- `POST /api/medical-records` - Create a new medical record
+- `PUT /api/medical-records/:id` - Update a medical record
+- `DELETE /api/medical-records/:id` - Delete a medical record
+- `GET /api/medical-records/vitals` - Get vitals
+- `POST /api/medical-records/vitals` - Create vitals
+- `PUT /api/medical-records/vitals/:id` - Update vitals
+- `DELETE /api/medical-records/vitals/:id` - Delete vitals
 
-## How It Works
+### Dashboard
+- `GET /api/dashboard/stats` - Get dashboard statistics
 
-1. Create and modify your project using [v0.dev](https://v0.dev)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+## Test Users
+
+- Admin: admin@docmitr.com / admin123
+- Doctor: ananya.gupta@docmitr.com / doctor123
+
+## Development
+
+For development, you can use:
+\`\`\`
+npm run dev
+\`\`\`
+
+This will start the server with nodemon, which will automatically restart the server when you make changes to the code.
