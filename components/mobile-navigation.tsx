@@ -1,25 +1,35 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Calendar, Home, Plus, User, Users } from "lucide-react"
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Calendar, Home, Plus, User, Users } from "lucide-react";
+import { AddAppointmentModal } from "./modals/add-appointment-modal";
+import { useState } from "react";
+import { AddPatientModal } from "./modals/add-patient-modal";
 
 export function MobileNavigation() {
-  const pathname = usePathname()
+  const pathname = usePathname();
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [openAddPatientModal, setOpenAddPatientModal] = useState(false);
+  const [addedPatient, setAddedPatient] = useState(null);
 
   // Updated isActive function to consider dashboard-related paths
   const isActive = (path: string, additionalPaths: string[] = []) => {
-    if (path === pathname) return true
-    if (additionalPaths.some((p) => pathname === p)) return true
-    return false
-  }
+    if (path === pathname) return true;
+    if (additionalPaths.some((p) => pathname === p)) return true;
+    return false;
+  };
 
   // Define the active and inactive colors
-  const activeColor = "text-blue-500"
-  const inactiveColor = "text-muted-foreground"
+  const activeColor = "text-blue-500";
+  const inactiveColor = "text-muted-foreground";
 
   // Dashboard-related paths that should highlight the Home icon
-  const homePaths = ["/", "/dashboard", "/doctor-dashboard"]
+  const homePaths = ["/", "/dashboard", "/doctor-dashboard"];
+
+  const handleAddPatient = (patient: any) => {
+    setAddedPatient(patient);
+  };
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-20 bg-background border-t md:hidden">
@@ -45,7 +55,10 @@ export function MobileNavigation() {
         </Link>
 
         <div className="flex items-center justify-center w-full h-full">
-          <button className="flex items-center justify-center w-12 h-12 bg-blue-500 text-primary-foreground rounded-full shadow-lg">
+          <button
+            className="flex items-center justify-center w-12 h-12 bg-blue-500 text-primary-foreground rounded-full shadow-lg"
+            onClick={() => setIsAddModalOpen(true)}
+          >
             <Plus className="h-6 w-6" />
           </button>
         </div>
@@ -70,6 +83,19 @@ export function MobileNavigation() {
           <span className="text-xs mt-1">Profile</span>
         </Link>
       </div>
+
+      <AddAppointmentModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        setOpenAddPatientModal={setOpenAddPatientModal}
+        addedPatient={addedPatient} // Pass the added patient to the modal
+      />
+
+      <AddPatientModal
+        isOpen={openAddPatientModal}
+        onClose={() => setOpenAddPatientModal(false)}
+        handleAddPatient={handleAddPatient}
+      />
     </div>
-  )
+  );
 }

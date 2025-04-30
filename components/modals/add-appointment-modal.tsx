@@ -1,223 +1,326 @@
-"use client"
+"use client";
 
-import type React from "react"
-
-import { useState } from "react"
-import { Modal } from "@/components/ui/modal"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
-import { toast } from "@/components/ui/use-toast"
+import React, { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { Modal } from "@/components/ui/modal";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/components/ui/use-toast";
 
 interface AddAppointmentModalProps {
-  isOpen: boolean
-  onClose: () => void
+  isOpen: boolean;
+  onClose: () => void;
+  openAddPatientModal?: () => void;
+  setOpenAddPatientModal?: (value: boolean) => void;
+  addedPatient?: any; // Replace with the correct type if available
+  setOpenHealthCheckModal?: (value: boolean) => void;
 }
 
-export function AddAppointmentModal({ isOpen, onClose }: AddAppointmentModalProps) {
-  const [formData, setFormData] = useState({
-    patientId: "",
-    doctorId: "",
-    date: "",
-    time: "",
-    duration: "30",
-    type: "Consultation",
-    notes: "",
-    status: "Confirmed",
-  })
-  const [isLoading, setIsLoading] = useState(false)
+type AppointmentFormValues = {
+  patient: string;
+  date: string;
+  time: string;
+  type: string;
+  complaint?: string;
+};
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+const dummyPatients = [
+  { _id: "627264hn827cg28424", name: "John Doe", phone: "123-456-7890" },
+  { _id: "6714627cb2847db246", name: "Jane Smith", phone: "987-654-3210" },
+  { _id: "62894982cv824gb247", name: "Alice Johnson", phone: "555-123-4567" },
+  { _id: "6034924vf24872db24", name: "Bob Williams", phone: "444-222-1111" },
+];
 
-  const handleSelectChange = (name: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+const timeSlots = [
+  "10:00 AM - 10:30 AM",
+  "12:00 PM - 12:30 PM",
+  "2:00 PM - 2:30 PM",
+  "4:00 PM - 4:30 PM",
+  "6:00 PM - 6:30 PM",
+];
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
+export function AddAppointmentModal({
+  isOpen,
+  onClose,
+  setOpenAddPatientModal,
+  addedPatient,
+  setOpenHealthCheckModal,
+}: AddAppointmentModalProps) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setValue,
+    reset,
+    control,
+    watch,
+  } = useForm<AppointmentFormValues>({
+    defaultValues: {
+      patient: "",
+      date: "",
+      time: "",
+      type: "Consultation",
+      complaint: "",
+    },
+  });
+  const [searchTerm, setSearchTerm] = useState("");
+  const [suggestions, setSuggestions] = useState<typeof dummyPatients>([]);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
+  useEffect(() => {
+    if (!!addedPatient) {
+      setValue("patient", addedPatient.name, { shouldValidate: true });
+      setSearchTerm(addedPatient.name);
+      setSuggestions([]); // Clear suggestions after selecting a patient
+    }
+  }, [addedPatient]);
+
+  useEffect(() => {
+    if (searchTerm.trim() === "") {
+      setSuggestions([]);
+    } else {
+      const filtered = dummyPatients.filter((p) =>
+        p.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setSuggestions(filtered);
+    }
+  }, [searchTerm]);
+
+  const onSubmit = async (data: AppointmentFormValues) => {
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      // Show success toast
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       toast({
         title: "Appointment scheduled successfully",
-        description: `Appointment scheduled for ${formData.date} at ${formData.time}.`,
-      })
-
-      // Close modal and reset form
-      onClose()
-      setFormData({
-        patientId: "",
-        doctorId: "",
-        date: "",
-        time: "",
-        duration: "30",
-        type: "Consultation",
-        notes: "",
-        status: "Confirmed",
-      })
+        description: `Appointment scheduled for ${data.date} at ${data.time}.`,
+      });
+      // onClose();
+      reset();
+      setShowConfirmation(true);
+      // setOpenHealthCheckModal?.(true);
     } catch (error) {
+      console.log(error);
       toast({
         title: "Error",
-        description: "There was an error scheduling the appointment. Please try again.",
+        description: "Failed to schedule appointment. Try again.",
         variant: "destructive",
-      })
-    } finally {
-      setIsLoading(false)
+      });
     }
-  }
-
-  // Mock data for patients and doctors
-  const patients = [
-    { id: "P-1001", name: "Emma Johnson" },
-    { id: "P-1002", name: "James Wilson" },
-    { id: "P-1003", name: "Sophia Martinez" },
-    { id: "P-1004", name: "William Taylor" },
-    { id: "P-1005", name: "Olivia Brown" },
-  ]
-
-  const doctors = [
-    { id: "D-1001", name: "Dr. Michael Chen", specialty: "Cardiology" },
-    { id: "D-1002", name: "Dr. Sarah Lee", specialty: "Dermatology" },
-    { id: "D-1003", name: "Dr. Robert Johnson", specialty: "Neurology" },
-    { id: "D-1004", name: "Dr. Emily Davis", specialty: "Pediatrics" },
-    { id: "D-1005", name: "Dr. James Wilson", specialty: "Orthopedic Surgery" },
-  ]
+  };
 
   return (
     <Modal
-      title="Schedule New Appointment"
-      description="Schedule a new appointment for a patient."
+      title={
+        showConfirmation
+          ? "Do You want to add a health record or continue without it?"
+          : "Schedule New Appointment"
+      }
+      description={
+        showConfirmation
+          ? "You can add a health record for the patient after scheduling the appointment"
+          : "Schedule a new appointment for a patient."
+      }
       isOpen={isOpen}
       onClose={onClose}
+      className={`sm:max-w-[500px] md:max-w-[${
+        showConfirmation ? `600px` : `700px`
+      }] w-full max-h-[90vh] overflow-auto`}
     >
-      <form onSubmit={handleSubmit} className="space-y-4 py-4">
-        <div className="grid gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="patientId">Patient</Label>
-            <Select
-              value={formData.patientId}
-              onValueChange={(value) => handleSelectChange("patientId", value)}
-              required
+      {showConfirmation ? (
+        <div>
+          <div className="flex items-center justify-start py-4 gap-3">
+            <Button
+              variant="outline"
+              type="button"
+              onClick={() => {
+                setShowConfirmation(false);
+                onClose();
+              }}
             >
-              <SelectTrigger>
-                <SelectValue placeholder="Select patient" />
-              </SelectTrigger>
-              <SelectContent>
-                {patients.map((patient) => (
-                  <SelectItem key={patient.id} value={patient.id}>
-                    {patient.name} ({patient.id})
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="grid gap-2">
-            <Label htmlFor="doctorId">Doctor</Label>
-            <Select value={formData.doctorId} onValueChange={(value) => handleSelectChange("doctorId", value)} required>
-              <SelectTrigger>
-                <SelectValue placeholder="Select doctor" />
-              </SelectTrigger>
-              <SelectContent>
-                {doctors.map((doctor) => (
-                  <SelectItem key={doctor.id} value={doctor.id}>
-                    {doctor.name} - {doctor.specialty}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="date">Date</Label>
-              <Input id="date" name="date" type="date" value={formData.date} onChange={handleChange} required />
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="time">Time</Label>
-              <Input id="time" name="time" type="time" value={formData.time} onChange={handleChange} required />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="duration">Duration (minutes)</Label>
-              <Select value={formData.duration} onValueChange={(value) => handleSelectChange("duration", value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select duration" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="15">15 minutes</SelectItem>
-                  <SelectItem value="30">30 minutes</SelectItem>
-                  <SelectItem value="45">45 minutes</SelectItem>
-                  <SelectItem value="60">60 minutes</SelectItem>
-                  <SelectItem value="90">90 minutes</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="type">Appointment Type</Label>
-              <Select value={formData.type} onValueChange={(value) => handleSelectChange("type", value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Consultation">Consultation</SelectItem>
-                  <SelectItem value="Follow-up">Follow-up</SelectItem>
-                  <SelectItem value="Procedure">Procedure</SelectItem>
-                  <SelectItem value="Check-up">Check-up</SelectItem>
-                  <SelectItem value="Emergency">Emergency</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="grid gap-2">
-            <Label htmlFor="notes">Notes</Label>
-            <Textarea
-              id="notes"
-              name="notes"
-              placeholder="Additional notes about the appointment"
-              value={formData.notes}
-              onChange={handleChange}
-              className="min-h-[80px]"
-            />
-          </div>
-
-          <div className="grid gap-2">
-            <Label htmlFor="status">Status</Label>
-            <Select value={formData.status} onValueChange={(value) => handleSelectChange("status", value)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Confirmed">Confirmed</SelectItem>
-                <SelectItem value="Pending">Pending</SelectItem>
-              </SelectContent>
-            </Select>
+              No, Continue without it
+            </Button>
+            <Button
+              type="button"
+              onClick={() => {
+                setShowConfirmation(true);
+                setOpenHealthCheckModal?.(true);
+              }}
+            >
+              Yes, Add Health Record
+            </Button>
           </div>
         </div>
+      ) : (
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-4">
+          <div className="grid gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="patient">Patient</Label>
+              <div className="flex flex-col md:flex-row items-start gap-2">
+                <div className="relative w-full">
+                  <Input
+                    id="patient"
+                    type="text"
+                    placeholder="Search patient name..."
+                    {...register("patient", {
+                      required: "Patient name is required",
+                      onChange: (e) => {
+                        setSearchTerm(e.target.value);
+                        setValue("patient", e.target.value, {
+                          shouldValidate: true,
+                        });
+                      },
+                    })}
+                    autoComplete="off"
+                  />
+                  {suggestions.length > 0 && (
+                    <ul className="absolute z-10 w-full bg-white border rounded shadow-md mt-1 max-h-48 overflow-y-auto">
+                      {suggestions.map((patient) => (
+                        <li
+                          key={patient._id}
+                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                          onClick={() => {
+                            setSuggestions([]);
+                            setSearchTerm("");
+                            setValue("patient", patient.name, {
+                              shouldValidate: true,
+                            });
+                          }}
+                        >
+                          <div className="font-medium">{patient.name}</div>
+                          <div className="text-sm text-muted-foreground">
+                            {patient.phone}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
 
-        <div className="flex justify-end space-x-2 pt-4">
-          <Button variant="outline" type="button" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? "Scheduling..." : "Schedule Appointment"}
-          </Button>
-        </div>
-      </form>
+                  {errors.patient && (
+                    <p className="text-sm text-red-600 mt-1">
+                      {errors.patient.message}
+                    </p>
+                  )}
+                </div>
+                <Button
+                  variant="secondary"
+                  type="button"
+                  className="w-1/4 text-blue-600"
+                  onClick={() => {
+                    setOpenAddPatientModal?.(true);
+                  }}
+                >
+                  Add Patient
+                </Button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="date">Date</Label>
+                <Input
+                  type="date"
+                  // disable past dates
+                  min={new Date().toISOString().split("T")[0]}
+                  id="date"
+                  {...register("date", { required: "Date is required" })}
+                />
+                {errors.date && (
+                  <p className="text-sm text-red-600 mt-1">
+                    {errors.date.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="time">Time</Label>
+                <Controller
+                  name="time"
+                  control={control}
+                  rules={{ required: "Time is required" }}
+                  render={({ field }) => (
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select time" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {timeSlots.map((slot) => (
+                          <SelectItem key={slot} value={slot}>
+                            {slot}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                {errors.time && (
+                  <p className="text-sm text-red-600 mt-1">
+                    {errors.time.message}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="type">Appointment Type</Label>
+                <Controller
+                  name="type"
+                  control={control}
+                  rules={{ required: "Type is required" }}
+                  render={({ field }) => (
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Consultation">
+                          Consultation
+                        </SelectItem>
+                        <SelectItem value="Follow-up">Follow-up</SelectItem>
+                        <SelectItem value="Procedure">Procedure</SelectItem>
+                        <SelectItem value="Check-up">Check-up</SelectItem>
+                        <SelectItem value="Emergency">Emergency</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                {errors.type && (
+                  <p className="text-sm text-red-600 mt-1">
+                    {errors.type.message}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="complaint">Complaint (optional)</Label>
+              <Textarea
+                id="complaint"
+                placeholder="Enter the patient's complaint"
+                {...register("complaint")}
+                className="min-h-[80px]"
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-end space-x-2 pt-4">
+            <Button variant="outline" type="button" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Scheduling..." : "Schedule Appointment"}
+            </Button>
+          </div>
+        </form>
+      )}
     </Modal>
-  )
+  );
 }

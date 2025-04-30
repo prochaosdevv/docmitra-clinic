@@ -1,18 +1,42 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { MainLayout } from "@/components/layout/main-layout"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { MoreHorizontal, Plus, Search } from "lucide-react"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { AddDoctorModal } from "@/components/modals/add-doctor-modal"
-import { ResponsiveTable } from "@/components/ui/responsive-table"
+import { useState } from "react";
+import { MainLayout } from "@/components/layout/main-layout";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { MoreHorizontal, Plus, Search } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { AddDoctorModal } from "@/components/modals/add-doctor-modal";
+import { ResponsiveTable } from "@/components/ui/responsive-table";
 
 const doctors = [
   {
@@ -115,13 +139,13 @@ const doctors = [
     patients: 68,
     status: "Active",
   },
-]
+];
 
 export default function DoctorsPage() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [specialtyFilter, setSpecialtyFilter] = useState("all")
-  const [statusFilter, setStatusFilter] = useState("all")
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState("");
+  const [specialtyFilter, setSpecialtyFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   // Filter doctors based on search term and filters
   const filteredDoctors = doctors.filter((doctor) => {
@@ -131,23 +155,24 @@ export default function DoctorsPage() {
       doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       doctor.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       doctor.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      doctor.specialty.toLowerCase().includes(searchTerm.toLowerCase())
+      doctor.specialty.toLowerCase().includes(searchTerm.toLowerCase());
 
     // Specialty filter
     const matchesSpecialty =
-      specialtyFilter === "all" || doctor.specialty.toLowerCase().includes(specialtyFilter.toLowerCase())
+      specialtyFilter === "all" ||
+      doctor.specialty.toLowerCase().includes(specialtyFilter.toLowerCase());
 
     // Status filter
-    const matchesStatus = statusFilter === "all" || doctor.status === statusFilter
+    const matchesStatus =
+      statusFilter === "all" || doctor.status === statusFilter;
 
-    return matchesSearch && matchesSpecialty && matchesStatus
-  })
+    return matchesSearch && matchesSpecialty && matchesStatus;
+  });
 
   return (
-    <MainLayout>
+    <MainLayout title="Doctors">
       <div className="flex flex-col gap-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Doctors</h1>
+        <div className="flex items-end justify-end">
           <Button onClick={() => setIsAddModalOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />
             Add Doctor
@@ -157,7 +182,9 @@ export default function DoctorsPage() {
         <Card>
           <CardHeader>
             <CardTitle>Doctors Directory</CardTitle>
-            <CardDescription>Manage healthcare professionals and specialists</CardDescription>
+            <CardDescription>
+              Manage healthcare professionals and specialists
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pb-4">
@@ -172,7 +199,10 @@ export default function DoctorsPage() {
                 />
               </div>
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-                <Select value={specialtyFilter} onValueChange={setSpecialtyFilter}>
+                <Select
+                  value={specialtyFilter}
+                  onValueChange={setSpecialtyFilter}
+                >
                   <SelectTrigger className="w-full sm:w-[180px]">
                     <SelectValue placeholder="Filter by specialty" />
                   </SelectTrigger>
@@ -184,7 +214,9 @@ export default function DoctorsPage() {
                     <SelectItem value="pediatrics">Pediatrics</SelectItem>
                     <SelectItem value="orthopedic">Orthopedic</SelectItem>
                     <SelectItem value="general">General Medicine</SelectItem>
-                    <SelectItem value="obstetrics">Obstetrics & Gynecology</SelectItem>
+                    <SelectItem value="obstetrics">
+                      Obstetrics & Gynecology
+                    </SelectItem>
                     <SelectItem value="psychiatry">Psychiatry</SelectItem>
                     <SelectItem value="ophthalmology">Ophthalmology</SelectItem>
                     <SelectItem value="endocrinology">Endocrinology</SelectItem>
@@ -242,7 +274,9 @@ export default function DoctorsPage() {
                             </Avatar>
                             <div>
                               <div className="font-medium">{doctor.name}</div>
-                              <div className="text-xs text-muted-foreground">{doctor.id}</div>
+                              <div className="text-xs text-muted-foreground">
+                                {doctor.id}
+                              </div>
                             </div>
                           </div>
                         </TableCell>
@@ -250,7 +284,9 @@ export default function DoctorsPage() {
                         <TableCell>
                           <div className="text-sm">
                             <div>{doctor.email}</div>
-                            <div className="text-xs text-muted-foreground">{doctor.phone}</div>
+                            <div className="text-xs text-muted-foreground">
+                              {doctor.phone}
+                            </div>
                           </div>
                         </TableCell>
                         <TableCell>{doctor.patients}</TableCell>
@@ -260,8 +296,8 @@ export default function DoctorsPage() {
                               doctor.status === "Active"
                                 ? "default"
                                 : doctor.status === "On Leave"
-                                  ? "secondary"
-                                  : "destructive"
+                                ? "secondary"
+                                : "destructive"
                             }
                           >
                             {doctor.status}
@@ -281,7 +317,9 @@ export default function DoctorsPage() {
                               <DropdownMenuItem>View Schedule</DropdownMenuItem>
                               <DropdownMenuItem>Patient List</DropdownMenuItem>
                               {doctor.status === "Active" ? (
-                                <DropdownMenuItem>Set On Leave</DropdownMenuItem>
+                                <DropdownMenuItem>
+                                  Set On Leave
+                                </DropdownMenuItem>
                               ) : doctor.status === "On Leave" ? (
                                 <DropdownMenuItem>Set Active</DropdownMenuItem>
                               ) : (
@@ -299,7 +337,10 @@ export default function DoctorsPage() {
           </CardContent>
         </Card>
       </div>
-      <AddDoctorModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} />
+      <AddDoctorModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+      />
     </MainLayout>
-  )
+  );
 }

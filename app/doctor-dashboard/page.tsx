@@ -1,17 +1,30 @@
-"use client"
+"use client";
 
-import { useAuth } from "@/contexts/auth-context"
-import { MainLayout } from "@/components/layout/main-layout"
-import { Card, CardContent } from "@/components/ui/card"
-import { Calendar } from "lucide-react"
-import { DoctorAppointments } from "@/components/dashboard/doctor-appointments"
+import { useAuth } from "@/contexts/auth-context";
+import { MainLayout } from "@/components/layout/main-layout";
+import { Card, CardContent } from "@/components/ui/card";
+import { Calendar, Plus } from "lucide-react";
+import { DoctorAppointments } from "@/components/dashboard/doctor-appointments";
+import { AddAppointmentModal } from "@/components/modals/add-appointment-modal";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { AddPatientModal } from "@/components/modals/add-patient-modal";
+import AddHealthCheckModal from "@/components/modals/add-healthcheck-modal";
 
 export default function DoctorDashboardPage() {
-  const { user } = useAuth()
+  const { user } = useAuth();
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [openAddPatientModal, setOpenAddPatientModal] = useState(false);
+  const [addedPatient, setAddedPatient] = useState(null);
+  const [openHealthCheckModal, setOpenHealthCheckModal] = useState(false);
 
   if (!user || user.role !== "doctor") {
-    return null // This should be handled by ProtectedRoute, but just in case
+    return null; // This should be handled by ProtectedRoute, but just in case
   }
+
+  const handleAddPatient = (patient: any) => {
+    setAddedPatient(patient);
+  };
 
   return (
     <MainLayout title="Doctor Dashboard">
@@ -37,11 +50,39 @@ export default function DoctorDashboardPage() {
                 <h3 className="text-sm font-semibold">Upcoming Appointments</h3>
                 <p className="text-xs text-muted-foreground">Your schedule</p>
               </div>
+
+              <Button
+                onClick={() => setIsAddModalOpen(true)}
+                // className="hidden md:flex"
+                size={"sm"}
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                New Appointment
+              </Button>
             </div>
             <DoctorAppointments doctorId={user.doctorId || ""} />
           </CardContent>
         </Card>
+
+        <AddAppointmentModal
+          isOpen={isAddModalOpen}
+          onClose={() => setIsAddModalOpen(false)}
+          setOpenAddPatientModal={setOpenAddPatientModal}
+          addedPatient={addedPatient}
+          setOpenHealthCheckModal={setOpenHealthCheckModal}
+        />
+
+        <AddPatientModal
+          isOpen={openAddPatientModal}
+          onClose={() => setOpenAddPatientModal(false)}
+          handleAddPatient={handleAddPatient}
+        />
+
+        <AddHealthCheckModal
+          isOpen={openHealthCheckModal}
+          onClose={() => setOpenHealthCheckModal(false)}
+        />
       </div>
     </MainLayout>
-  )
+  );
 }

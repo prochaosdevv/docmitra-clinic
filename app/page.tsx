@@ -1,30 +1,30 @@
-"use client"
+"use client";
 
-import { useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { Card, CardContent } from "@/components/ui/card"
-import { MainLayout } from "@/components/layout/main-layout"
-import { Activity, Calendar, DollarSign } from "lucide-react"
-import { AppointmentChart } from "@/components/dashboard/appointment-chart"
-import { UpcomingAppointments } from "@/components/dashboard/upcoming-appointments"
-import { useAuth } from "@/contexts/auth-context"
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Card, CardContent } from "@/components/ui/card";
+import { MainLayout } from "@/components/layout/main-layout";
+import { Activity, Calendar, DollarSign } from "lucide-react";
+import { AppointmentChart } from "@/components/dashboard/appointment-chart";
+import { UpcomingAppointments } from "@/components/dashboard/upcoming-appointments";
+import { useAuth } from "@/contexts/auth-context";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function DashboardPage() {
-  const { user } = useAuth()
-  const router = useRouter()
+  const { user } = useAuth();
+  const router = useRouter();
 
   // Redirect doctors to their dashboard
   useEffect(() => {
     if (user?.role === "doctor") {
-      router.push("/doctor-dashboard")
+      router.push("/doctor-dashboard");
     }
-  }, [user, router])
+  }, [user, router]);
 
   // Only show admin dashboard to admins
   if (user?.role !== "admin") {
-    return null
+    return null;
   }
 
   return (
@@ -39,7 +39,9 @@ export default function DashboardPage() {
                 <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 mr-2">
                   <Calendar className="h-4 w-4 text-primary" />
                 </div>
-                <div className="text-xs text-muted-foreground">Today's Appointments</div>
+                <div className="text-xs text-muted-foreground">
+                  Today's Appointments
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -47,12 +49,16 @@ export default function DashboardPage() {
           <Card className="col-span-1">
             <CardContent className="p-4 flex flex-col items-center md:items-start">
               <div className="text-2xl font-bold">₹24,568</div>
-              <div className="text-xs text-green-500">+8.2% from last month</div>
+              <div className="text-xs text-green-500">
+                +8.2% from last month
+              </div>
               <div className="flex items-center mt-2">
                 <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 mr-2">
                   <DollarSign className="h-4 w-4 text-primary" />
                 </div>
-                <div className="text-xs text-muted-foreground">Total Revenue</div>
+                <div className="text-xs text-muted-foreground">
+                  Total Revenue
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -65,7 +71,9 @@ export default function DashboardPage() {
                 <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 mr-2">
                   <Activity className="h-4 w-4 text-primary" />
                 </div>
-                <div className="text-xs text-muted-foreground">Active Staff</div>
+                <div className="text-xs text-muted-foreground">
+                  Active Staff
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -77,9 +85,15 @@ export default function DashboardPage() {
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="text-lg font-semibold">Appointments</h3>
-                  <p className="text-sm text-muted-foreground">Manage your clinic schedule</p>
+                  <p className="text-sm text-muted-foreground">
+                    Manage your clinic schedule
+                  </p>
                 </div>
-                <Button variant="outline" size="sm" onClick={() => router.push("/appointments")}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => router.push("/appointments")}
+                >
                   View All
                 </Button>
               </div>
@@ -111,5 +125,5 @@ export default function DashboardPage() {
         </Card>
       </div>
     </MainLayout>
-  )
+  );
 }
