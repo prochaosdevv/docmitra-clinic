@@ -10,6 +10,7 @@ import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { AddPatientModal } from "@/components/modals/add-patient-modal";
 import AddHealthCheckModal from "@/components/modals/add-healthcheck-modal";
+import { StaffAppointments } from "@/components/dashboard/staff-appoinments";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 
@@ -104,7 +105,7 @@ const APPOINTMENTS = [
   },
 ];
 
-export default function DoctorDashboardPage() {
+export default function StaffDashboardPage() {
   const { user } = useAuth();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [openAddPatientModal, setOpenAddPatientModal] = useState(false);
@@ -114,9 +115,13 @@ export default function DoctorDashboardPage() {
   const [inClinicSearch, setInClinicSearch] = useState("");
   const [upcomingSearch, setUpcomingSearch] = useState("");
 
-  if (!user || user.role !== "doctor") {
+  if (!user || user.role !== "staff") {
     return null; // This should be handled by ProtectedRoute, but just in case
   }
+
+  const handleAddPatient = (patient: any) => {
+    setAddedPatient(patient);
+  };
 
   const filteredInClinic = useCallback(
     () =>
@@ -140,12 +145,8 @@ export default function DoctorDashboardPage() {
     [upcomingSearch]
   );
 
-  const handleAddPatient = (patient: any) => {
-    setAddedPatient(patient);
-  };
-
   return (
-    <MainLayout title="Doctor Dashboard">
+    <MainLayout title="Staff Dashboard">
       <div className="flex flex-col gap-6">
         <Card>
           <CardContent className="p-3">
@@ -187,6 +188,7 @@ export default function DoctorDashboardPage() {
                 New Appointment
               </Button>
             </div>
+
             <div className="my-5">
               <Tabs defaultValue="in-clinic" className="w-full">
                 <TabsList className="w-full grid grid-cols-2 h-12 mb-4">
@@ -211,10 +213,7 @@ export default function DoctorDashboardPage() {
                     value={inClinicSearch}
                     onChange={(e) => setInClinicSearch(e.target.value)}
                   />
-                  <DoctorAppointments
-                    appointments={filteredInClinic()}
-                    doctorId={user.doctorId || ""}
-                  />
+                  <StaffAppointments appointments={filteredInClinic()} />
                 </TabsContent>
 
                 <TabsContent value="upcoming" className="mt-0">
@@ -224,10 +223,7 @@ export default function DoctorDashboardPage() {
                     value={upcomingSearch}
                     onChange={(e) => setUpcomingSearch(e.target.value)}
                   />
-                  <DoctorAppointments
-                    appointments={filteredUpcoming()}
-                    doctorId={user.doctorId || ""}
-                  />
+                  <StaffAppointments appointments={filteredUpcoming()} />
                 </TabsContent>
               </Tabs>
             </div>

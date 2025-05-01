@@ -20,32 +20,21 @@ interface Appointment {
   doctorId: string;
 }
 
-interface DoctorAppointmentsProps {
-  doctorId: string;
-}
-
-export function DoctorAppointments({
+export function StaffAppointments({
   appointments,
-  doctorId,
 }: {
   appointments: Appointment[];
-  doctorId: string;
 }) {
   const router = useRouter();
 
-  // Filter appointments for this doctor
-  const doctorAppointments = appointments.filter(
-    (app) => app.doctorId === doctorId
-  );
-
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-      {doctorAppointments.length === 0 ? (
+      {appointments.length === 0 ? (
         <div className="col-span-full text-center py-8 text-muted-foreground">
           No upcoming appointments found.
         </div>
       ) : (
-        doctorAppointments.map((appointment) => (
+        appointments.map((appointment) => (
           <div
             key={appointment.id}
             className="rounded-lg border p-2 hover:shadow-md transition-shadow cursor-pointer"

@@ -19,6 +19,8 @@ export default function DashboardPage() {
   useEffect(() => {
     if (user?.role === "doctor") {
       router.push("/doctor-dashboard");
+    } else if (user?.role === "staff") {
+      router.push("/staff-dashboard");
     }
   }, [user, router]);
 

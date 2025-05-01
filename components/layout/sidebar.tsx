@@ -27,6 +27,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 export function Sidebar() {
   const { openSideBar } = useUi();
@@ -50,14 +51,19 @@ export function Sidebar() {
   };
 
   const isDoctor = user?.role === "doctor";
-  const dashboardPath = isDoctor ? "/doctor-dashboard" : "/";
+  const isStaff = user?.role === "staff";
+  const dashboardPath = isDoctor
+    ? "/doctor-dashboard"
+    : isStaff
+    ? "/staff-dashboard"
+    : "/";
 
   const navItems = [
     { path: dashboardPath, label: "Dashboard", icon: LayoutDashboard },
     { path: "/appointments", label: "Appointments", icon: Calendar },
     { path: "/patients", label: "Patients", icon: Users },
     { path: "/medical-records", label: "Medical Records", icon: ClipboardList },
-    ...(isDoctor
+    ...(isDoctor || isStaff
       ? []
       : [
           { path: "/doctors", label: "Doctors", icon: Stethoscope },
@@ -136,28 +142,54 @@ export function Sidebar() {
       </div>
 
       {/* Footer */}
+      {/* Footer */}
       <div className="border-t p-4">
-        <div
-          className={cn(
-            "flex items-center",
-            collapsed ? "justify-center" : "gap-3"
-          )}
-        >
-          <Avatar className="h-9 w-9">
-            <AvatarImage
-              src={user?.avatar || "/compassionate-doctor-consultation.png"}
-              alt={user?.name || "User"}
-            />
-            <AvatarFallback>
-              {user?.name
-                ? user.name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")
-                : "U"}
-            </AvatarFallback>
-          </Avatar>
-          {!collapsed && (
+        {collapsed ? (
+          <Popover>
+            <PopoverTrigger asChild>
+              <Avatar className="h-9 w-9 cursor-pointer mx-auto">
+                <AvatarImage
+                  src={user?.avatar || "/compassionate-doctor-consultation.png"}
+                  alt={user?.name || "User"}
+                />
+                <AvatarFallback>
+                  {user?.name
+                    ? user.name
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")
+                    : "U"}
+                </AvatarFallback>
+              </Avatar>
+            </PopoverTrigger>
+            <PopoverContent align="end" className="w-auto p-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleLogout}
+                className="w-full justify-start"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
+              </Button>
+            </PopoverContent>
+          </Popover>
+        ) : (
+          <div className="flex items-center gap-3">
+            <Avatar className="h-9 w-9">
+              <AvatarImage
+                src={user?.avatar || "/compassionate-doctor-consultation.png"}
+                alt={user?.name || "User"}
+              />
+              <AvatarFallback>
+                {user?.name
+                  ? user.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")
+                  : "U"}
+              </AvatarFallback>
+            </Avatar>
             <div className="flex-1 overflow-hidden">
               <p className="text-sm font-medium leading-none truncate">
                 {user?.name || "User"}
@@ -166,13 +198,11 @@ export function Sidebar() {
                 {user?.role || "User"}
               </p>
             </div>
-          )}
-          {!collapsed && (
             <Button variant="ghost" size="icon" onClick={handleLogout}>
               <LogOut className="h-4 w-4" />
             </Button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

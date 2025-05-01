@@ -150,7 +150,8 @@ export function AddAppointmentModal({
             <Button
               type="button"
               onClick={() => {
-                setShowConfirmation(true);
+                setShowConfirmation(false);
+                onClose();
                 setOpenHealthCheckModal?.(true);
               }}
             >

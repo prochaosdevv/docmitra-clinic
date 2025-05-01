@@ -1,24 +1,46 @@
-"use client"
+"use client";
 
-import { useParams, useRouter } from "next/navigation"
-import { useState } from "react"
-import { MainLayout } from "@/components/layout/main-layout"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, Calendar, Clock, FileText, FileTextIcon as FileText2, TrendingUp, CheckCircle } from "lucide-react"
-import { Separator } from "@/components/ui/separator"
-import { PatientRecordsModal } from "@/components/modals/patient-records-modal"
-import { EditableTagsArea } from "@/components/ui/editable-tags-area"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
-import { PrescriptionForm } from "@/components/ui/prescription-form"
-import { Modal } from "@/components/ui/modal"
-import { PrescriptionPreview } from "@/components/ui/prescription-preview"
-import { ConfirmationDialog } from "@/components/ui/confirmation-dialog"
-import { useToast } from "@/components/ui/use-toast"
+import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
+import { MainLayout } from "@/components/layout/main-layout";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import {
+  ArrowLeft,
+  Calendar,
+  Clock,
+  FileText,
+  FileTextIcon as FileText2,
+  TrendingUp,
+  CheckCircle,
+} from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { PatientRecordsModal } from "@/components/modals/patient-records-modal";
+import { EditableTagsArea } from "@/components/ui/editable-tags-area";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+import { PrescriptionForm } from "@/components/ui/prescription-form";
+import { Modal } from "@/components/ui/modal";
+import { PrescriptionPreview } from "@/components/ui/prescription-preview";
+import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
+import { useToast } from "@/components/ui/use-toast";
+import AddHealthCheckModal from "@/components/modals/add-healthcheck-modal";
 
 // Mock appointment data with Indian names in English
 const APPOINTMENTS = [
@@ -27,12 +49,14 @@ const APPOINTMENTS = [
     patientName: "Amit Sharma",
     patientId: "P-1001",
     patientAge: 38,
-    patientAvatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Amit Sharma",
+    patientAvatar:
+      "/abstract-geometric-shapes.png?height=36&width=36&query=Amit Sharma",
     patientEmail: "amit.s@example.com",
     patientPhone: "+91 98765 43210",
     doctorName: "Dr. Aditya Kapoor",
     doctorId: "D-1001",
-    doctorAvatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Dr. Aditya Kapoor",
+    doctorAvatar:
+      "/abstract-geometric-shapes.png?height=36&width=36&query=Dr. Aditya Kapoor",
     specialty: "Cardiology",
     date: "May 15, 2023",
     time: "10:00 AM",
@@ -40,49 +64,30 @@ const APPOINTMENTS = [
     type: "Check-up",
     status: "Confirmed",
     location: "Main Clinic, Room 105",
-    notes: "Follow-up on blood pressure medication. Patient to bring recent test results.",
+    notes:
+      "Follow-up on blood pressure medication. Patient to bring recent test results.",
     previousComplaints: ["Headaches", "Dizziness", "Fatigue"],
     previousDiagnosis: ["Hypertension (Primary)"],
     previousPrescriptions: [
       { name: "Lisinopril", dosage: "10mg", schedule: "Once daily" },
       { name: "Aspirin", dosage: "81mg", schedule: "Once daily" },
     ].map((p) => `${p.name} - ${p.dosage} - ${p.schedule}`),
-    previousInstructions: ["Monitor blood pressure at home", "Reduce sodium intake", "Regular exercise"],
-    vitalsHistory: [
-      {
-        date: "Apr 23, 2023",
-        bloodPressure: "140/88",
-        systolic: 140,
-        diastolic: 88,
-        heartRate: 78,
-        temperature: 98.4,
-        oxygenSaturation: 97,
-        weight: 75.5,
-        height: 165,
-      },
-      {
-        date: "Feb 15, 2023",
-        bloodPressure: "142/90",
-        systolic: 142,
-        diastolic: 90,
-        heartRate: 80,
-        temperature: 98.8,
-        oxygenSaturation: 98,
-        weight: 76.2,
-        height: 165,
-      },
-      {
-        date: "Dec 10, 2022",
-        bloodPressure: "145/92",
-        systolic: 145,
-        diastolic: 92,
-        heartRate: 82,
-        temperature: 98.6,
-        oxygenSaturation: 97,
-        weight: 77.1,
-        height: 165,
-      },
+    previousInstructions: [
+      "Monitor blood pressure at home",
+      "Reduce sodium intake",
+      "Regular exercise",
     ],
+    vitalsHistory: [] as {
+      diastolic: number;
+      systolic: number;
+      hemoglobin: number;
+      date: string;
+      blood_pressure: number;
+      glucose: number;
+      sgpt: number;
+      sgot: number;
+      urea: number;
+    }[],
   },
   // Keep other appointments but add empty vitalsHistory arrays
   {
@@ -90,12 +95,14 @@ const APPOINTMENTS = [
     patientName: "Priya Patel",
     patientId: "P-1002",
     patientAge: 47,
-    patientAvatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Priya Patel",
+    patientAvatar:
+      "/abstract-geometric-shapes.png?height=36&width=36&query=Priya Patel",
     patientEmail: "priya.p@example.com",
     patientPhone: "+91 87654 32109",
     doctorName: "Dr. Sanjana Desai",
     doctorId: "D-1002",
-    doctorAvatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Dr. Sanjana Desai",
+    doctorAvatar:
+      "/abstract-geometric-shapes.png?height=36&width=36&query=Dr. Sanjana Desai",
     specialty: "Dermatology",
     date: "May 15, 2023",
     time: "11:30 AM",
@@ -103,24 +110,61 @@ const APPOINTMENTS = [
     type: "Consultation",
     status: "Confirmed",
     location: "Main Clinic, Room 203",
-    notes: "Initial consultation for skin condition. Patient has reported persistent rash on arms.",
+    notes:
+      "Initial consultation for skin condition. Patient has reported persistent rash on arms.",
     previousComplaints: ["Skin rash", "Itching"],
     previousDiagnosis: [],
     previousPrescriptions: [],
     previousInstructions: [],
-    vitalsHistory: [],
+    vitalsHistory: [
+      {
+        date: "Apr 23, 2023",
+        blood_pressure: "140/88",
+        hemoglobin: 13.5,
+        glucose: 90,
+        sgpt: 25,
+        sgot: 30,
+        urea: 20,
+        systolic: 140,
+        diastolic: 88,
+      },
+      {
+        date: "May 1, 2023",
+        blood_pressure: "135/85",
+        hemoglobin: 13.8,
+        glucose: 92,
+        sgpt: 28,
+        sgot: 32,
+        urea: 22,
+        systolic: 135,
+        diastolic: 85,
+      },
+      {
+        date: "May 10, 2023",
+        blood_pressure: "130/80",
+        hemoglobin: 14.0,
+        glucose: 88,
+        sgpt: 26,
+        sgot: 29,
+        urea: 21,
+        systolic: 130,
+        diastolic: 80,
+      },
+    ],
   },
   {
     id: "A-1003",
     patientName: "Rahul Verma",
     patientId: "P-1003",
     patientAge: 33,
-    patientAvatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Rahul Verma",
+    patientAvatar:
+      "/abstract-geometric-shapes.png?height=36&width=36&query=Rahul Verma",
     patientEmail: "rahul.v@example.com",
     patientPhone: "+91 76543 21098",
     doctorName: "Dr. Vikram Mehta",
     doctorId: "D-1003",
-    doctorAvatar: "/abstract-geometric-shapes.png?height=36&width=36&query=Dr. Vikram Mehta",
+    doctorAvatar:
+      "/abstract-geometric-shapes.png?height=36&width=36&query=Dr. Vikram Mehta",
     specialty: "Neurology",
     date: "May 15, 2023",
     time: "2:15 PM",
@@ -128,14 +172,15 @@ const APPOINTMENTS = [
     type: "Follow-up",
     status: "Cancelled",
     location: "Main Clinic, Room 302",
-    notes: "Follow-up after MRI scan. Patient experiencing recurring headaches.",
+    notes:
+      "Follow-up after MRI scan. Patient experiencing recurring headaches.",
     previousComplaints: ["Recurring headaches", "Visual aura"],
     previousDiagnosis: ["Migraine"],
     previousPrescriptions: [],
     previousInstructions: ["Avoid triggers", "Keep headache diary"],
     vitalsHistory: [],
   },
-]
+];
 
 // Define normal ranges for vitals
 const NORMAL_RANGES = {
@@ -146,104 +191,112 @@ const NORMAL_RANGES = {
   oxygenSaturation: { min: 95, max: 100, unit: "%" },
   weight: { unit: "kg" },
   height: { unit: "cm" },
-}
+};
 
 export default function AppointmentDetailsPage() {
-  const params = useParams()
-  const router = useRouter()
-  const appointmentId = params.id as string
-  const { toast } = useToast()
+  const params = useParams();
+  const router = useRouter();
+  const appointmentId = params.id as string;
+  const { toast } = useToast();
+  const [appoinmentsList, setAppoinmentsList] = useState(APPOINTMENTS);
+  const [openHealthCheckModal, setOpenHealthCheckModal] = useState(false);
 
   // State for patient records modal
-  const [isRecordsModalOpen, setIsRecordsModalOpen] = useState(false)
+  const [isRecordsModalOpen, setIsRecordsModalOpen] = useState(false);
 
   // State for appointment finalization
-  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false)
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false)
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   // State for editable tags
-  const [diagnosis, setDiagnosis] = useState<string[]>([])
-  const [complaints, setComplaints] = useState<string[]>([])
+  const [diagnosis, setDiagnosis] = useState<string[]>([]);
+  const [complaints, setComplaints] = useState<string[]>([]);
   const [prescriptions, setPrescriptions] = useState<
     {
-      name: string
-      dosage: string
-      schedule: string
-      timeOfDay?: string[]
-      withFood?: string
+      name: string;
+      dosage: string;
+      schedule: string;
+      timeOfDay?: string[];
+      withFood?: string;
     }[]
-  >([])
-  const [instructions, setInstructions] = useState<string[]>([])
+  >([]);
+  const [instructions, setInstructions] = useState<string[]>([]);
 
   // State for active vital tab
-  const [activeVitalTab, setActiveVitalTab] = useState("bloodPressure")
+  const [activeVitalTab, setActiveVitalTab] = useState("bloodPressure");
 
   // Find the appointment by ID
-  const appointment = APPOINTMENTS.find((app) => app.id === appointmentId)
+  const appointment = appoinmentsList.find((app) => app.id === appointmentId);
 
   // Handle removing previous tags
   const handleRemovePreviousTag = (type: string, tag: string) => {
     // In a real app, this would call an API to update the patient's record
-    console.log(`Removing ${type}: ${tag}`)
-  }
+    console.log(`Removing ${type}: ${tag}`);
+  };
 
   // Helper function to determine if a value is within normal range
-  const getStatus = (value: number, type: keyof typeof NORMAL_RANGES) => {
-    const range = NORMAL_RANGES[type]
-    if (!range.min || !range.max) return "normal" // Skip for values without ranges
-    if (value < range.min) return "low"
-    if (value > range.max) return "high"
-    return "normal"
-  }
+  // const getStatus = (value: number, type: keyof typeof NORMAL_RANGES) => {
+  //   const range = NORMAL_RANGES[type]
+  //   if (!range.min || !range.max) return "normal" // Skip for values without ranges
+  //   if (value < range.min) return "low"
+  //   if (value > range.max) return "high"
+  //   return "normal"
+  // }
 
   // Helper function to get badge variant based on status
   const getBadgeVariant = (status: string) => {
     switch (status) {
       case "high":
-        return "destructive"
+        return "destructive";
       case "low":
-        return "secondary"
+        return "secondary";
       default:
-        return "outline"
+        return "outline";
     }
-  }
+  };
 
   // Handle finalize button click
   const handleFinalize = () => {
     // Check if any data has been entered
-    if (complaints.length === 0 && diagnosis.length === 0 && prescriptions.length === 0 && instructions.length === 0) {
+    if (
+      complaints.length === 0 &&
+      diagnosis.length === 0 &&
+      prescriptions.length === 0 &&
+      instructions.length === 0
+    ) {
       toast({
         title: "No data entered",
-        description: "Please enter at least one complaint, diagnosis, prescription, or instruction before finalizing.",
+        description:
+          "Please enter at least one complaint, diagnosis, prescription, or instruction before finalizing.",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
-    setIsConfirmationOpen(true)
-  }
+    setIsConfirmationOpen(true);
+  };
 
   // Handle confirmation dialog confirm
   const handleConfirmFinalize = () => {
-    setIsConfirmationOpen(false)
-    setIsPreviewOpen(true)
-  }
+    setIsConfirmationOpen(false);
+    setIsPreviewOpen(true);
+  };
 
   // Handle saving the appointment
   const handleSaveAppointment = () => {
     // In a real app, this would save all the appointment data to the database
-    setIsPreviewOpen(false)
+    setIsPreviewOpen(false);
     toast({
       title: "Appointment finalized",
       description: "The appointment has been successfully finalized and saved.",
       variant: "default",
-    })
+    });
 
     // In a real app, we would redirect to the appointments list or update the status
     // For now, we'll just simulate a status change
     setTimeout(() => {
-      router.push("/appointments")
-    }, 1500)
-  }
+      router.push("/appointments");
+    }, 1500);
+  };
 
   if (!appointment) {
     return (
@@ -251,7 +304,8 @@ export default function AppointmentDetailsPage() {
         <div className="flex flex-col items-center justify-center h-[50vh]">
           <h1 className="text-xl font-bold mb-2">Appointment Not Found</h1>
           <p className="text-muted-foreground mb-4 text-sm">
-            The appointment you're looking for doesn't exist or has been removed.
+            The appointment you're looking for doesn't exist or has been
+            removed.
           </p>
           <Button size="sm" onClick={() => router.back()}>
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -259,41 +313,109 @@ export default function AppointmentDetailsPage() {
           </Button>
         </div>
       </MainLayout>
-    )
+    );
   }
 
   // Get latest vitals
   const latestVitals =
-    appointment.vitalsHistory && appointment.vitalsHistory.length > 0 ? appointment.vitalsHistory[0] : null
+    appointment.vitalsHistory && appointment.vitalsHistory.length > 0
+      ? appointment.vitalsHistory[0]
+      : null;
+
+  console.log(latestVitals);
+
+  const formatVitalValue = (key: string, value: string) => {
+    switch (key) {
+      case "blood_pressure":
+        return `${value} mmHg`;
+      case "hemoglobin":
+        return `${value} g/dL`;
+      case "glucose":
+        return `${value} mg/dL`;
+      case "sgpt":
+      case "sgot":
+      case "urea":
+        return `${value} U/L`;
+      default:
+        return value;
+    }
+  };
 
   // Prepare data for charts
   const getChartData = (vitalType: string) => {
     if (!appointment.vitalsHistory || appointment.vitalsHistory.length === 0) {
-      return []
+      return [];
     }
 
-    // Reverse to show oldest to newest
-    const history = [...appointment.vitalsHistory].reverse()
+    // Use the history array as is (newest first)
+    const history = [...appointment.vitalsHistory];
 
-    if (vitalType === "bloodPressure") {
-      return history.map((record) => ({
-        date: record.date,
-        systolic: record.systolic,
-        diastolic: record.diastolic,
-      }))
+    // Special handling for blood pressure
+    if (vitalType === "bloodPressure" || vitalType === "blood_pressure") {
+      return history.map((record) => {
+        if (record.blood_pressure) {
+          // Parse blood pressure value (e.g., "120/80" -> {systolic: 120, diastolic: 80})
+          const [systolic, diastolic] = record.blood_pressure
+            .toString()
+            .split("/")
+            .map(Number);
+          return {
+            date: record.date,
+            systolic,
+            diastolic,
+          };
+        }
+        // Handle legacy or direct format
+        return {
+          date: record.date,
+          systolic: record.systolic || 0,
+          diastolic: record.diastolic || 0,
+        };
+      });
     }
 
+    // For other vital types
     return history.map((record) => ({
       date: record.date,
-      value: record[vitalType as keyof typeof record],
-    }))
-  }
+      value:
+        record[vitalType as keyof typeof record] ||
+        record[vitalType.toLowerCase() as keyof typeof record] ||
+        0,
+    }));
+  };
+
+  console.log(getChartData("glucose"));
+
+  const submitFunction = (data: any) => {
+    setAppoinmentsList((prev: any) =>
+      prev.map((app: any) => {
+        if (app.id === appointmentId) {
+          return {
+            ...app,
+            vitalsHistory: [
+              ...app.vitalsHistory,
+              {
+                date: new Date().toLocaleDateString(),
+                ...data,
+              },
+            ],
+          };
+        }
+        return app;
+      })
+    );
+  };
 
   return (
     <MainLayout>
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => router.back()}>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            onClick={() => router.back()}
+          >
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <h1 className="text-lg font-bold">Appointment Details</h1>
@@ -304,7 +426,10 @@ export default function AppointmentDetailsPage() {
           <CardContent className="p-3">
             <div className="flex items-center gap-3">
               <Avatar className="h-10 w-10">
-                <AvatarImage src={appointment.patientAvatar || "/placeholder.svg"} alt={appointment.patientName} />
+                <AvatarImage
+                  src={appointment.patientAvatar || "/placeholder.svg"}
+                  alt={appointment.patientName}
+                />
                 <AvatarFallback>
                   {appointment.patientName
                     .split(" ")
@@ -313,7 +438,9 @@ export default function AppointmentDetailsPage() {
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
-                <div className="font-medium text-sm">{appointment.patientName}</div>
+                <div className="font-medium text-sm">
+                  {appointment.patientName}
+                </div>
                 <div className="text-xs text-muted-foreground flex items-center gap-1">
                   <span>{appointment.patientId}</span>
                   <span>•</span>
@@ -324,26 +451,32 @@ export default function AppointmentDetailsPage() {
                 </div>
               </div>
               <div className="flex flex-col gap-2 items-end">
-                <Badge
-                  variant={
-                    appointment.status === "Confirmed"
-                      ? "primary"
-                      : appointment.status === "Completed"
+                <div className="flex items-center gap-2">
+                  <Badge
+                    variant={
+                      appointment.status === "Confirmed"
+                        ? "default"
+                        : appointment.status === "Completed"
                         ? "success"
                         : appointment.status === "Cancelled"
-                          ? "destructive"
-                          : "secondary"
-                  }
-                  className={
-                    appointment.status === "Confirmed"
-                      ? "bg-blue-500 hover:bg-blue-600 text-white"
-                      : appointment.status === "Completed" || appointment.status === "Cancelled"
+                        ? "destructive"
+                        : "secondary"
+                    }
+                    className={
+                      appointment.status === "Confirmed"
+                        ? "bg-blue-500 hover:bg-blue-600 text-white"
+                        : appointment.status === "Completed" ||
+                          appointment.status === "Cancelled"
                         ? "text-white"
                         : ""
-                  }
-                >
-                  {appointment.status}
-                </Badge>
+                    }
+                  >
+                    {appointment.status}
+                  </Badge>
+                  <Badge variant={"default"} className={"bg-yellow-500"}>
+                    VIP
+                  </Badge>
+                </div>
                 <Button
                   variant="outline"
                   size="sm"
@@ -389,7 +522,9 @@ export default function AppointmentDetailsPage() {
 
             <div className="space-y-1">
               <div className="text-xs text-muted-foreground">Notes</div>
-              <div className="text-xs p-2 bg-muted rounded-md">{appointment.notes}</div>
+              <div className="text-xs p-2 bg-muted rounded-md">
+                {appointment.notes}
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -397,38 +532,69 @@ export default function AppointmentDetailsPage() {
         {/* Medical Information Card with Accordions */}
         <Card>
           <CardContent className="p-3">
-            <Accordion type="multiple" defaultValue={["vitals", "complaints"]} className="space-y-2">
+            <Accordion
+              type="multiple"
+              defaultValue={["vitals", "complaints"]}
+              className="space-y-2"
+            >
               <AccordionItem value="vitals" className="border rounded-md">
-                <AccordionTrigger className="py-2 px-2 text-sm font-medium hover:no-underline">Vitals</AccordionTrigger>
+                <AccordionTrigger className="py-2 px-2 text-sm font-medium hover:no-underline">
+                  <div className="w-full flex items-center justify-between">
+                    <span>Vitals</span>
+
+                    <span
+                      className="text-sm mr-2 py-1 px-2 bg-blue-500 rounded-md text-white"
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent accordion toggle
+                        setOpenHealthCheckModal(true);
+                      }}
+                    >
+                      Add vitals
+                    </span>
+                  </div>
+                </AccordionTrigger>
                 <AccordionContent className="pt-2 pb-3 px-2">
                   {latestVitals ? (
                     <div className="space-y-4">
                       {/* Latest Vitals Display */}
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                        <div className="rounded-lg border p-2">
-                          <div className="text-xs text-muted-foreground">Blood Pressure</div>
-                          <div className="text-sm font-medium">{latestVitals.bloodPressure} mmHg</div>
-                        </div>
-                        <div className="rounded-lg border p-2">
-                          <div className="text-xs text-muted-foreground">Heart Rate</div>
-                          <div className="text-sm font-medium">{latestVitals.heartRate} bpm</div>
-                        </div>
-                        <div className="rounded-lg border p-2">
-                          <div className="text-xs text-muted-foreground">Temperature</div>
-                          <div className="text-sm font-medium">{latestVitals.temperature} °F</div>
-                        </div>
-                        <div className="rounded-lg border p-2">
-                          <div className="text-xs text-muted-foreground">Oxygen Saturation</div>
-                          <div className="text-sm font-medium">{latestVitals.oxygenSaturation}%</div>
-                        </div>
-                        <div className="rounded-lg border p-2">
-                          <div className="text-xs text-muted-foreground">Weight</div>
-                          <div className="text-sm font-medium">{latestVitals.weight} kg</div>
-                        </div>
-                        <div className="rounded-lg border p-2">
-                          <div className="text-xs text-muted-foreground">Height</div>
-                          <div className="text-sm font-medium">{latestVitals.height} cm</div>
-                        </div>
+                        {Object.entries(latestVitals)
+                          .filter(([key]) => key !== "date") // Exclude date field
+                          .map(([key, value]) => {
+                            // Find display name for the key
+                            const displayName = (() => {
+                              switch (key) {
+                                case "blood_pressure":
+                                  return "Blood Pressure";
+                                case "hemoglobin":
+                                  return "Hemoglobin";
+                                case "glucose":
+                                  return "Glucose";
+                                case "sgpt":
+                                  return "SGPT";
+                                case "sgot":
+                                  return "SGOT";
+                                case "urea":
+                                  return "Urea";
+                                default:
+                                  return (
+                                    key.charAt(0).toUpperCase() +
+                                    key.slice(1).replace(/_/g, " ")
+                                  );
+                              }
+                            })();
+
+                            return (
+                              <div key={key} className="rounded-lg border p-2">
+                                <div className="text-xs text-muted-foreground">
+                                  {displayName}
+                                </div>
+                                <div className="text-sm font-medium">
+                                  {formatVitalValue(key, value as string)}
+                                </div>
+                              </div>
+                            );
+                          })}
                       </div>
 
                       {/* Vitals History Charts */}
@@ -438,145 +604,215 @@ export default function AppointmentDetailsPage() {
                             <TrendingUp className="h-3 w-3 mr-1" />
                             Vitals History
                           </div>
-                          <div className="text-xs text-muted-foreground">Last recorded: {latestVitals.date}</div>
+                          <div className="text-xs text-muted-foreground">
+                            Last recorded: {latestVitals.date}
+                          </div>
                         </div>
 
-                        <Tabs value={activeVitalTab} onValueChange={setActiveVitalTab}>
+                        <Tabs
+                          value={activeVitalTab}
+                          onValueChange={setActiveVitalTab}
+                        >
                           <TabsList className="w-full grid grid-cols-3 sm:grid-cols-6 h-8">
-                            <TabsTrigger value="bloodPressure" className="text-xs">
-                              BP
-                            </TabsTrigger>
-                            <TabsTrigger value="heartRate" className="text-xs">
-                              Heart Rate
-                            </TabsTrigger>
-                            <TabsTrigger value="temperature" className="text-xs">
-                              Temp
-                            </TabsTrigger>
-                            <TabsTrigger value="oxygenSaturation" className="text-xs">
-                              O₂
-                            </TabsTrigger>
-                            <TabsTrigger value="weight" className="text-xs">
-                              Weight
-                            </TabsTrigger>
-                            <TabsTrigger value="height" className="text-xs">
-                              Height
-                            </TabsTrigger>
+                            {!!latestVitals.blood_pressure && (
+                              <TabsTrigger
+                                value="bloodPressure"
+                                className="text-xs"
+                              >
+                                BP
+                              </TabsTrigger>
+                            )}
+                            {!!latestVitals.hemoglobin && (
+                              <TabsTrigger
+                                value="hemoglobin"
+                                className="text-xs"
+                              >
+                                Hemoglobin
+                              </TabsTrigger>
+                            )}
+                            {!!latestVitals.glucose && (
+                              <TabsTrigger value="glucose" className="text-xs">
+                                Glucose
+                              </TabsTrigger>
+                            )}
+                            {!!latestVitals.sgpt && (
+                              <TabsTrigger value="sgpt" className="text-xs">
+                                SGPT
+                              </TabsTrigger>
+                            )}
+                            {!!latestVitals.sgot && (
+                              <TabsTrigger value="sgot" className="text-xs">
+                                SGOT
+                              </TabsTrigger>
+                            )}
+                            {!!latestVitals.urea && (
+                              <TabsTrigger value="urea" className="text-xs">
+                                Urea
+                              </TabsTrigger>
+                            )}
                           </TabsList>
 
-                          <TabsContent value="bloodPressure" className="mt-2">
-                            <div className="h-[200px] w-full">
-                              <ResponsiveContainer width="100%" height="100%">
-                                <LineChart data={getChartData("bloodPressure")}>
-                                  <CartesianGrid strokeDasharray="3 3" />
-                                  <XAxis dataKey="date" tick={{ fontSize: 10 }} />
-                                  <YAxis domain={[60, 160]} tick={{ fontSize: 10 }} />
-                                  <Tooltip />
-                                  <Line
-                                    type="monotone"
-                                    dataKey="systolic"
-                                    stroke="#ef4444"
-                                    name="Systolic"
-                                    dot={{ r: 3 }}
-                                  />
-                                  <Line
-                                    type="monotone"
-                                    dataKey="diastolic"
-                                    stroke="#3b82f6"
-                                    name="Diastolic"
-                                    dot={{ r: 3 }}
-                                  />
-                                </LineChart>
-                              </ResponsiveContainer>
-                            </div>
-                          </TabsContent>
+                          {!!latestVitals.blood_pressure && (
+                            <TabsContent value="bloodPressure" className="mt-2">
+                              <div className="h-[200px] w-full">
+                                <ResponsiveContainer width="100%" height="100%">
+                                  <LineChart
+                                    data={getChartData("blood_pressure")}
+                                  >
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis
+                                      dataKey="date"
+                                      tick={{ fontSize: 10 }}
+                                    />
+                                    <YAxis
+                                      domain={[60, 160]}
+                                      tick={{ fontSize: 10 }}
+                                    />
+                                    <Tooltip />
+                                    <Line
+                                      type="monotone"
+                                      dataKey="systolic"
+                                      stroke="#ef4444"
+                                      name="Systolic"
+                                      dot={{ r: 3 }}
+                                    />
+                                    <Line
+                                      type="monotone"
+                                      dataKey="diastolic"
+                                      stroke="#3b82f6"
+                                      name="Diastolic"
+                                      dot={{ r: 3 }}
+                                    />
+                                  </LineChart>
+                                </ResponsiveContainer>
+                              </div>
+                            </TabsContent>
+                          )}
 
-                          <TabsContent value="heartRate" className="mt-2">
-                            <div className="h-[200px] w-full">
-                              <ResponsiveContainer width="100%" height="100%">
-                                <LineChart data={getChartData("heartRate")}>
-                                  <CartesianGrid strokeDasharray="3 3" />
-                                  <XAxis dataKey="date" tick={{ fontSize: 10 }} />
-                                  <YAxis domain={[50, 100]} tick={{ fontSize: 10 }} />
-                                  <Tooltip />
-                                  <Line
-                                    type="monotone"
-                                    dataKey="value"
-                                    stroke="#10b981"
-                                    name="Heart Rate"
-                                    dot={{ r: 3 }}
-                                  />
-                                </LineChart>
-                              </ResponsiveContainer>
-                            </div>
-                          </TabsContent>
+                          {!!latestVitals.hemoglobin && (
+                            <TabsContent value="hemoglobin" className="mt-2">
+                              <div className="h-[200px] w-full">
+                                <ResponsiveContainer width="100%" height="100%">
+                                  <LineChart data={getChartData("hemoglobin")}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis
+                                      dataKey="date"
+                                      tick={{ fontSize: 10 }}
+                                    />
+                                    <YAxis tick={{ fontSize: 10 }} />
+                                    <Tooltip />
+                                    <Line
+                                      type="monotone"
+                                      dataKey="value"
+                                      stroke="#10b981"
+                                      name="Hemoglobin"
+                                      dot={{ r: 3 }}
+                                    />
+                                  </LineChart>
+                                </ResponsiveContainer>
+                              </div>
+                            </TabsContent>
+                          )}
 
-                          <TabsContent value="temperature" className="mt-2">
-                            <div className="h-[200px] w-full">
-                              <ResponsiveContainer width="100%" height="100%">
-                                <LineChart data={getChartData("temperature")}>
-                                  <CartesianGrid strokeDasharray="3 3" />
-                                  <XAxis dataKey="date" tick={{ fontSize: 10 }} />
-                                  <YAxis domain={[97, 100]} tick={{ fontSize: 10 }} />
-                                  <Tooltip />
-                                  <Line
-                                    type="monotone"
-                                    dataKey="value"
-                                    stroke="#f59e0b"
-                                    name="Temperature"
-                                    dot={{ r: 3 }}
-                                  />
-                                </LineChart>
-                              </ResponsiveContainer>
-                            </div>
-                          </TabsContent>
+                          {!!latestVitals.glucose && (
+                            <TabsContent value="glucose" className="mt-2">
+                              <div className="h-[200px] w-full">
+                                <ResponsiveContainer width="100%" height="100%">
+                                  <LineChart data={getChartData("glucose")}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis
+                                      dataKey="date"
+                                      tick={{ fontSize: 10 }}
+                                    />
+                                    <YAxis tick={{ fontSize: 10 }} />
+                                    <Tooltip />
+                                    <Line
+                                      type="monotone"
+                                      dataKey="value"
+                                      stroke="#f59e0b"
+                                      name="Glucose"
+                                      dot={{ r: 3 }}
+                                    />
+                                  </LineChart>
+                                </ResponsiveContainer>
+                              </div>
+                            </TabsContent>
+                          )}
 
-                          <TabsContent value="oxygenSaturation" className="mt-2">
-                            <div className="h-[200px] w-full">
-                              <ResponsiveContainer width="100%" height="100%">
-                                <LineChart data={getChartData("oxygenSaturation")}>
-                                  <CartesianGrid strokeDasharray="3 3" />
-                                  <XAxis dataKey="date" tick={{ fontSize: 10 }} />
-                                  <YAxis domain={[90, 100]} tick={{ fontSize: 10 }} />
-                                  <Tooltip />
-                                  <Line
-                                    type="monotone"
-                                    dataKey="value"
-                                    stroke="#6366f1"
-                                    name="Oxygen Saturation"
-                                    dot={{ r: 3 }}
-                                  />
-                                </LineChart>
-                              </ResponsiveContainer>
-                            </div>
-                          </TabsContent>
+                          {!!latestVitals.sgpt && (
+                            <TabsContent value="sgpt" className="mt-2">
+                              <div className="h-[200px] w-full">
+                                <ResponsiveContainer width="100%" height="100%">
+                                  <LineChart data={getChartData("sgpt")}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis
+                                      dataKey="date"
+                                      tick={{ fontSize: 10 }}
+                                    />
+                                    <YAxis tick={{ fontSize: 10 }} />
+                                    <Tooltip />
+                                    <Line
+                                      type="monotone"
+                                      dataKey="value"
+                                      stroke="#6366f1"
+                                      name="SGPT"
+                                      dot={{ r: 3 }}
+                                    />
+                                  </LineChart>
+                                </ResponsiveContainer>
+                              </div>
+                            </TabsContent>
+                          )}
 
-                          <TabsContent value="weight" className="mt-2">
-                            <div className="h-[200px] w-full">
-                              <ResponsiveContainer width="100%" height="100%">
-                                <LineChart data={getChartData("weight")}>
-                                  <CartesianGrid strokeDasharray="3 3" />
-                                  <XAxis dataKey="date" tick={{ fontSize: 10 }} />
-                                  <YAxis tick={{ fontSize: 10 }} />
-                                  <Tooltip />
-                                  <Line type="monotone" dataKey="value" stroke="#0ea5e9" name="Weight" dot={{ r: 3 }} />
-                                </LineChart>
-                              </ResponsiveContainer>
-                            </div>
-                          </TabsContent>
+                          {!!latestVitals.sgot && (
+                            <TabsContent value="sgot" className="mt-2">
+                              <div className="h-[200px] w-full">
+                                <ResponsiveContainer width="100%" height="100%">
+                                  <LineChart data={getChartData("sgot")}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis
+                                      dataKey="date"
+                                      tick={{ fontSize: 10 }}
+                                    />
+                                    <YAxis tick={{ fontSize: 10 }} />
+                                    <Tooltip />
+                                    <Line
+                                      type="monotone"
+                                      dataKey="value"
+                                      stroke="#0ea5e9"
+                                      name="SGOT"
+                                      dot={{ r: 3 }}
+                                    />
+                                  </LineChart>
+                                </ResponsiveContainer>
+                              </div>
+                            </TabsContent>
+                          )}
 
-                          <TabsContent value="height" className="mt-2">
-                            <div className="h-[200px] w-full">
-                              <ResponsiveContainer width="100%" height="100%">
-                                <LineChart data={getChartData("height")}>
-                                  <CartesianGrid strokeDasharray="3 3" />
-                                  <XAxis dataKey="date" tick={{ fontSize: 10 }} />
-                                  <YAxis tick={{ fontSize: 10 }} />
-                                  <Tooltip />
-                                  <Line type="monotone" dataKey="value" stroke="#8b5cf6" name="Height" dot={{ r: 3 }} />
-                                </LineChart>
-                              </ResponsiveContainer>
-                            </div>
-                          </TabsContent>
+                          {!!latestVitals.urea && (
+                            <TabsContent value="urea" className="mt-2">
+                              <div className="h-[200px] w-full">
+                                <ResponsiveContainer width="100%" height="100%">
+                                  <LineChart data={getChartData("urea")}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis
+                                      dataKey="date"
+                                      tick={{ fontSize: 10 }}
+                                    />
+                                    <YAxis tick={{ fontSize: 10 }} />
+                                    <Tooltip />
+                                    <Line
+                                      type="monotone"
+                                      dataKey="value"
+                                      stroke="#8b5cf6"
+                                      name="Urea"
+                                      dot={{ r: 3 }}
+                                    />
+                                  </LineChart>
+                                </ResponsiveContainer>
+                              </div>
+                            </TabsContent>
+                          )}
                         </Tabs>
                       </div>
                     </div>
@@ -587,7 +823,6 @@ export default function AppointmentDetailsPage() {
                   )}
                 </AccordionContent>
               </AccordionItem>
-
               <AccordionItem value="complaints" className="border rounded-md">
                 <AccordionTrigger className="py-2 px-2 text-sm font-medium hover:no-underline">
                   Complaints
@@ -598,7 +833,9 @@ export default function AppointmentDetailsPage() {
                     onChange={setComplaints}
                     placeholder="Enter patient complaints..."
                     previousTags={appointment.previousComplaints}
-                    onRemovePrevious={(tag) => handleRemovePreviousTag("complaint", tag)}
+                    onRemovePrevious={(tag) =>
+                      handleRemovePreviousTag("complaint", tag)
+                    }
                   />
                 </AccordionContent>
               </AccordionItem>
@@ -613,12 +850,17 @@ export default function AppointmentDetailsPage() {
                     onChange={setDiagnosis}
                     placeholder="Enter diagnosis..."
                     previousTags={appointment.previousDiagnosis}
-                    onRemovePrevious={(tag) => handleRemovePreviousTag("diagnosis", tag)}
+                    onRemovePrevious={(tag) =>
+                      handleRemovePreviousTag("diagnosis", tag)
+                    }
                   />
                 </AccordionContent>
               </AccordionItem>
 
-              <AccordionItem value="prescriptions" className="border rounded-md">
+              <AccordionItem
+                value="prescriptions"
+                className="border rounded-md"
+              >
                 <AccordionTrigger className="py-2 px-2 text-sm font-medium hover:no-underline">
                   Prescriptions
                 </AccordionTrigger>
@@ -626,24 +868,32 @@ export default function AppointmentDetailsPage() {
                   <PrescriptionForm
                     prescriptions={prescriptions}
                     onChange={setPrescriptions}
-                    previousPrescriptions={appointment.previousPrescriptions.map((text) => {
-                      // Try to parse existing prescriptions into structured format
-                      const parts = text.split(" - ")
-                      if (parts.length >= 3) {
+                    previousPrescriptions={appointment.previousPrescriptions.map(
+                      (text) => {
+                        // Try to parse existing prescriptions into structured format
+                        const parts = text.split(" - ");
+                        if (parts.length >= 3) {
+                          return {
+                            name: parts[0],
+                            dosage: parts[1],
+                            schedule: parts.slice(2).join(" - "),
+                            timeOfDay: [],
+                            withFood: "",
+                          };
+                        }
                         return {
-                          name: parts[0],
-                          dosage: parts[1],
-                          schedule: parts.slice(2).join(" - "),
+                          name: text,
+                          dosage: "",
+                          schedule: "",
                           timeOfDay: [],
                           withFood: "",
-                        }
+                        };
                       }
-                      return { name: text, dosage: "", schedule: "", timeOfDay: [], withFood: "" }
-                    })}
+                    )}
                     onRemovePrevious={(prescription) =>
                       handleRemovePreviousTag(
                         "prescription",
-                        `${prescription.name} - ${prescription.dosage} - ${prescription.schedule}`,
+                        `${prescription.name} - ${prescription.dosage} - ${prescription.schedule}`
                       )
                     }
                   />
@@ -660,7 +910,9 @@ export default function AppointmentDetailsPage() {
                     onChange={setInstructions}
                     placeholder="Enter patient instructions..."
                     previousTags={appointment.previousInstructions}
-                    onRemovePrevious={(tag) => handleRemovePreviousTag("instruction", tag)}
+                    onRemovePrevious={(tag) =>
+                      handleRemovePreviousTag("instruction", tag)
+                    }
                   />
                 </AccordionContent>
               </AccordionItem>
@@ -673,7 +925,10 @@ export default function AppointmentDetailsPage() {
           className="w-full mt-2"
           onClick={handleFinalize}
           disabled={
-            complaints.length === 0 && diagnosis.length === 0 && prescriptions.length === 0 && instructions.length === 0
+            complaints.length === 0 &&
+            diagnosis.length === 0 &&
+            prescriptions.length === 0 &&
+            instructions.length === 0
           }
         >
           <CheckCircle className="h-4 w-4 mr-2" />
@@ -724,20 +979,28 @@ export default function AppointmentDetailsPage() {
             doctorName={appointment.doctorName}
             date={appointment.date}
             prescriptions={prescriptions}
-            previousPrescriptions={appointment.previousPrescriptions.map((text) => {
-              // Try to parse existing prescriptions into structured format
-              const parts = text.split(" - ")
-              if (parts.length >= 3) {
+            previousPrescriptions={appointment.previousPrescriptions.map(
+              (text) => {
+                // Try to parse existing prescriptions into structured format
+                const parts = text.split(" - ");
+                if (parts.length >= 3) {
+                  return {
+                    name: parts[0],
+                    dosage: parts[1],
+                    schedule: parts.slice(2).join(" - "),
+                    timeOfDay: [],
+                    withFood: "",
+                  };
+                }
                 return {
-                  name: parts[0],
-                  dosage: parts[1],
-                  schedule: parts.slice(2).join(" - "),
+                  name: text,
+                  dosage: "",
+                  schedule: "",
                   timeOfDay: [],
                   withFood: "",
-                }
+                };
               }
-              return { name: text, dosage: "", schedule: "", timeOfDay: [], withFood: "" }
-            })}
+            )}
             complaints={complaints}
             diagnosis={diagnosis}
             instructions={instructions}
@@ -747,6 +1010,12 @@ export default function AppointmentDetailsPage() {
           />
         </div>
       </Modal>
+
+      <AddHealthCheckModal
+        isOpen={openHealthCheckModal}
+        onClose={() => setOpenHealthCheckModal(false)}
+        submitFunction={submitFunction}
+      />
     </MainLayout>
-  )
+  );
 }

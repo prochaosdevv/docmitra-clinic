@@ -44,6 +44,18 @@ const patientFormSchema = z.object({
     .min(10, "Phone number must be at least 10 digits")
     .regex(/^\d+$/, "Phone number must contain only digits"),
   gender: z.string().min(1, "Please select a gender"),
+  age: z
+    .string()
+    .min(1, "Please enter an age")
+    .regex(/^\d*$/, "Age must contain only digits"),
+  height: z
+    .string()
+    .min(1, "Please enter a height")
+    .regex(/^\d*$/, "Height must contain only digits"),
+  weight: z
+    .string()
+    .min(1, "Please enter a weight")
+    .regex(/^\d*$/, "Weight must contain only digits"),
   dobYear: z
     .string()
     .min(1, "Please enter a year")
@@ -143,6 +155,9 @@ export function AddPatientModal({
       email: "",
       phone: "",
       gender: "",
+      age: "",
+      height: "",
+      weight: "",
       address: "",
       patientUID: "",
       thirdPartyUID: "",
@@ -377,12 +392,55 @@ export function AddPatientModal({
 
               <FormField
                 control={form.control}
+                name="age"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Age</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Age" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="adhar"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Adhar</FormLabel>
                     <FormControl>
                       <Input placeholder="Adhar" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* Gender and Adhar */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="height"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Height</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Height" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="weight"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Weight</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Weight" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
