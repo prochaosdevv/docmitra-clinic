@@ -1,15 +1,31 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { ResponsiveTable } from "@/components/ui/responsive-table"
+import { useState } from "react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  ReferenceLine,
+} from "recharts";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { ResponsiveTable } from "@/components/ui/responsive-table";
 
 // Mock vitals data
 const PATIENT_VITALS = {
-  "P-1001": [
+  "P-2001": [
     {
       date: "May 15, 2023",
       bloodPressure: "138/85",
@@ -55,7 +71,7 @@ const PATIENT_VITALS = {
       glucose: 105,
     },
   ],
-  "P-1002": [
+  "P-2002": [
     {
       date: "Apr 24, 2023",
       bloodPressure: "120/80",
@@ -79,7 +95,7 @@ const PATIENT_VITALS = {
       glucose: 92,
     },
   ],
-  "P-1003": [
+  "P-2003": [
     {
       date: "Apr 25, 2023",
       bloodPressure: "118/78",
@@ -92,7 +108,7 @@ const PATIENT_VITALS = {
       glucose: 88,
     },
   ],
-}
+};
 
 // Normal ranges for vitals
 const NORMAL_RANGES = {
@@ -102,37 +118,37 @@ const NORMAL_RANGES = {
   temperature: { min: 97, max: 99 },
   oxygenSaturation: { min: 95, max: 100 },
   glucose: { min: 70, max: 100 },
-}
+};
 
 // Helper function to determine if a value is within normal range
 const getStatus = (value: number, type: keyof typeof NORMAL_RANGES) => {
-  const range = NORMAL_RANGES[type]
-  if (value < range.min) return "low"
-  if (value > range.max) return "high"
-  return "normal"
-}
+  const range = NORMAL_RANGES[type];
+  if (value < range.min) return "low";
+  if (value > range.max) return "high";
+  return "normal";
+};
 
 // Helper function to get badge variant based on status
 const getBadgeVariant = (status: string) => {
   switch (status) {
     case "high":
-      return "destructive"
+      return "destructive";
     case "low":
-      return "secondary"
+      return "secondary";
     default:
-      return "success"
+      return "success";
   }
-}
+};
 
 interface VitalsTableProps {
-  patientId: string
+  patientId: string;
 }
 
 export function VitalsTable({ patientId }: VitalsTableProps) {
-  const [selectedVital, setSelectedVital] = useState<string>("bloodPressure")
+  const [selectedVital, setSelectedVital] = useState<string>("bloodPressure");
 
   // Get patient vitals
-  const vitals = PATIENT_VITALS[patientId as keyof typeof PATIENT_VITALS] || []
+  const vitals = PATIENT_VITALS[patientId as keyof typeof PATIENT_VITALS] || [];
 
   // Prepare data for the selected vital chart
   const getChartData = () => {
@@ -143,7 +159,7 @@ export function VitalsTable({ patientId }: VitalsTableProps) {
           systolic: v.systolic,
           diastolic: v.diastolic,
         }))
-        .reverse()
+        .reverse();
     }
 
     return vitals
@@ -151,10 +167,10 @@ export function VitalsTable({ patientId }: VitalsTableProps) {
         date: v.date,
         value: v[selectedVital as keyof typeof v] as number,
       }))
-      .reverse()
-  }
+      .reverse();
+  };
 
-  const chartData = getChartData()
+  const chartData = getChartData();
 
   return (
     <div className="space-y-4">
@@ -218,12 +234,40 @@ export function VitalsTable({ patientId }: VitalsTableProps) {
               <XAxis dataKey="date" tick={{ fontSize: 10 }} />
               <YAxis domain={[60, 160]} tick={{ fontSize: 10 }} />
               <Tooltip />
-              <ReferenceLine y={NORMAL_RANGES.systolic.max} stroke="red" strokeDasharray="3 3" />
-              <ReferenceLine y={NORMAL_RANGES.systolic.min} stroke="orange" strokeDasharray="3 3" />
-              <ReferenceLine y={NORMAL_RANGES.diastolic.max} stroke="red" strokeDasharray="3 3" />
-              <ReferenceLine y={NORMAL_RANGES.diastolic.min} stroke="orange" strokeDasharray="3 3" />
-              <Line type="monotone" dataKey="systolic" stroke="#ef4444" dot={{ r: 3 }} name="Systolic" />
-              <Line type="monotone" dataKey="diastolic" stroke="#3b82f6" dot={{ r: 3 }} name="Diastolic" />
+              <ReferenceLine
+                y={NORMAL_RANGES.systolic.max}
+                stroke="red"
+                strokeDasharray="3 3"
+              />
+              <ReferenceLine
+                y={NORMAL_RANGES.systolic.min}
+                stroke="orange"
+                strokeDasharray="3 3"
+              />
+              <ReferenceLine
+                y={NORMAL_RANGES.diastolic.max}
+                stroke="red"
+                strokeDasharray="3 3"
+              />
+              <ReferenceLine
+                y={NORMAL_RANGES.diastolic.min}
+                stroke="orange"
+                strokeDasharray="3 3"
+              />
+              <Line
+                type="monotone"
+                dataKey="systolic"
+                stroke="#ef4444"
+                dot={{ r: 3 }}
+                name="Systolic"
+              />
+              <Line
+                type="monotone"
+                dataKey="diastolic"
+                stroke="#3b82f6"
+                dot={{ r: 3 }}
+                name="Diastolic"
+              />
             </LineChart>
           ) : (
             <LineChart data={chartData}>
@@ -234,18 +278,30 @@ export function VitalsTable({ patientId }: VitalsTableProps) {
               {selectedVital !== "weight" && (
                 <>
                   <ReferenceLine
-                    y={NORMAL_RANGES[selectedVital as keyof typeof NORMAL_RANGES]?.max}
+                    y={
+                      NORMAL_RANGES[selectedVital as keyof typeof NORMAL_RANGES]
+                        ?.max
+                    }
                     stroke="red"
                     strokeDasharray="3 3"
                   />
                   <ReferenceLine
-                    y={NORMAL_RANGES[selectedVital as keyof typeof NORMAL_RANGES]?.min}
+                    y={
+                      NORMAL_RANGES[selectedVital as keyof typeof NORMAL_RANGES]
+                        ?.min
+                    }
                     stroke="orange"
                     strokeDasharray="3 3"
                   />
                 </>
               )}
-              <Line type="monotone" dataKey="value" stroke="#0ea5e9" dot={{ r: 3 }} name={selectedVital} />
+              <Line
+                type="monotone"
+                dataKey="value"
+                stroke="#0ea5e9"
+                dot={{ r: 3 }}
+                name={selectedVital}
+              />
             </LineChart>
           )}
         </ResponsiveContainer>
@@ -268,21 +324,31 @@ export function VitalsTable({ patientId }: VitalsTableProps) {
           <TableBody>
             {vitals.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-4 text-sm text-muted-foreground">
+                <TableCell
+                  colSpan={7}
+                  className="text-center py-4 text-sm text-muted-foreground"
+                >
                   No vitals data available.
                 </TableCell>
               </TableRow>
             ) : (
               vitals.map((vital, index) => (
                 <TableRow key={index}>
-                  <TableCell className="font-medium text-xs">{vital.date}</TableCell>
+                  <TableCell className="font-medium text-xs">
+                    {vital.date}
+                  </TableCell>
                   <TableCell>
                     <Badge variant="outline" className="text-xs">
                       {vital.bloodPressure}
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <Badge variant={getBadgeVariant(getStatus(vital.heartRate, "heartRate"))} className="text-xs">
+                    <Badge
+                      variant={getBadgeVariant(
+                        getStatus(vital.heartRate, "heartRate")
+                      )}
+                      className="text-xs"
+                    >
                       {vital.heartRate} bpm
                     </Badge>
                   </TableCell>
@@ -292,20 +358,32 @@ export function VitalsTable({ patientId }: VitalsTableProps) {
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <Badge variant={getBadgeVariant(getStatus(vital.temperature, "temperature"))} className="text-xs">
+                    <Badge
+                      variant={getBadgeVariant(
+                        getStatus(vital.temperature, "temperature")
+                      )}
+                      className="text-xs"
+                    >
                       {vital.temperature} °F
                     </Badge>
                   </TableCell>
                   <TableCell>
                     <Badge
-                      variant={getBadgeVariant(getStatus(vital.oxygenSaturation, "oxygenSaturation"))}
+                      variant={getBadgeVariant(
+                        getStatus(vital.oxygenSaturation, "oxygenSaturation")
+                      )}
                       className="text-xs"
                     >
                       {vital.oxygenSaturation}%
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <Badge variant={getBadgeVariant(getStatus(vital.glucose, "glucose"))} className="text-xs">
+                    <Badge
+                      variant={getBadgeVariant(
+                        getStatus(vital.glucose, "glucose")
+                      )}
+                      className="text-xs"
+                    >
                       {vital.glucose} mg/dL
                     </Badge>
                   </TableCell>
@@ -316,5 +394,5 @@ export function VitalsTable({ patientId }: VitalsTableProps) {
         </Table>
       </ResponsiveTable>
     </div>
-  )
+  );
 }

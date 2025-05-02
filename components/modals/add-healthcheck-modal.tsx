@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Modal } from "../ui/modal";
 import {
   Select,
@@ -9,9 +9,17 @@ import {
 } from "../ui/select";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { Plus, Trash2 } from "lucide-react";
+import { Check, ChevronDown, Plus, Trash2 } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { toast } from "@/hooks/use-toast";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "../ui/command";
 
 interface AddHealthCheckModalProps {
   isOpen: boolean;
@@ -19,10 +27,13 @@ interface AddHealthCheckModalProps {
   submitFunction?: (fields: Record<string, string>) => void;
 }
 
-const dropdownOptions = [
+const dropdownOptionsList = [
   { label: "Hemoglobin", value: "hemoglobin" },
   { label: "Blood Pressure", value: "blood_pressure" },
   { label: "Glucose", value: "glucose" },
+  { label: "Temprature", value: "temprature" },
+  { label: "Height", value: "height" },
+  { label: "Weight", value: "weight" },
   { label: "SGPT", value: "sgpt" },
   { label: "SGOT", value: "sgot" },
   { label: "Urea", value: "urea" },
@@ -43,12 +54,17 @@ function AddHealthCheckModal({
     Record<string, string>
   >({});
   const [error, setError] = React.useState<string | null>(null);
+  const [open, setOpen] = useState(false);
+  const [dropdownOptions, setDropdownOptions] =
+    React.useState(dropdownOptionsList);
+  const [selectedValue, setSelectedValue] = useState<string | null>(null);
 
   const handleNewFieldChange = (fieldType: keyof Field, value: string) => {
     setNewField((prev) => ({ ...prev, [fieldType]: value }));
   };
 
   const handleAddHealthCheck = () => {
+    console.log("Adding health check:", newField);
     if (!newField.key || !newField.value) return;
 
     const isDuplicate = submittedFields.hasOwnProperty(newField.key);
@@ -68,6 +84,8 @@ function AddHealthCheckModal({
     }));
 
     setNewField({ key: "", value: "" });
+    setSelectedValue(null);
+    setOpen(false);
   };
 
   const handleDeleteField = (key: string) => {
@@ -95,29 +113,59 @@ function AddHealthCheckModal({
 
   return (
     <Modal
-      title="Health Check"
-      description="Add a health check for the patient"
+      title="Health Reports"
+      description="Add a health reports for the patient"
       isOpen={isOpen}
       onClose={onClose}
       className="max-h-[90vh] sm:p-6 p-4"
     >
       <div className="w-full flex flex-col space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-          <Select
-            onValueChange={(val) => handleNewFieldChange("key", val)}
-            value={newField.key}
-          >
-            <SelectTrigger className="w-full sm:w-fit">
-              <SelectValue placeholder="Select Health Check" />
-            </SelectTrigger>
-            <SelectContent className="w-full sm:w-fit">
-              {dropdownOptions.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={open}
+                className="w-full justify-between text-left sm:w-[160px]"
+              >
+                {selectedValue
+                  ? dropdownOptionsList.find(
+                      (item) => item.value === selectedValue
+                    )?.label
+                  : "Select Option"}
+                <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-full p-0">
+              <Command className="">
+                <CommandInput placeholder="Search..." />
+                <CommandEmpty>No reports found.</CommandEmpty>
+                <CommandGroup>
+                  {dropdownOptionsList.map((option) => (
+                    <CommandItem
+                      key={option.value}
+                      value={option.value}
+                      onSelect={(val) => {
+                        setSelectedValue(val);
+                        handleNewFieldChange("key", val);
+                        setOpen(false);
+                      }}
+                    >
+                      <Check
+                        className={`mr-2 h-4 w-4 ${
+                          selectedValue === option.value
+                            ? "opacity-100"
+                            : "opacity-0"
+                        }`}
+                      />
+                      {option.label}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </Command>
+            </PopoverContent>
+          </Popover>
 
           <Input
             type="text"

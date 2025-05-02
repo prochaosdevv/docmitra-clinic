@@ -41,146 +41,142 @@ import { PrescriptionPreview } from "@/components/ui/prescription-preview";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 import { useToast } from "@/components/ui/use-toast";
 import AddHealthCheckModal from "@/components/modals/add-healthcheck-modal";
+import { APPOINTMENTS } from "@/app/staff-dashboard/page";
+import { cn } from "@/lib/utils";
+
+export interface VitalsHistoryRecord {
+  date: string;
+  [key: string]: string | number; // Allow dynamic vital fields
+}
 
 // Mock appointment data with Indian names in English
-const APPOINTMENTS = [
-  {
-    id: "A-1001",
-    patientName: "Amit Sharma",
-    patientId: "P-1001",
-    patientAge: 38,
-    patientAvatar:
-      "/abstract-geometric-shapes.png?height=36&width=36&query=Amit Sharma",
-    patientEmail: "amit.s@example.com",
-    patientPhone: "+91 98765 43210",
-    doctorName: "Dr. Aditya Kapoor",
-    doctorId: "D-1001",
-    doctorAvatar:
-      "/abstract-geometric-shapes.png?height=36&width=36&query=Dr. Aditya Kapoor",
-    specialty: "Cardiology",
-    date: "May 15, 2023",
-    time: "10:00 AM",
-    duration: "30 minutes",
-    type: "Check-up",
-    status: "Confirmed",
-    location: "Main Clinic, Room 105",
-    notes:
-      "Follow-up on blood pressure medication. Patient to bring recent test results.",
-    previousComplaints: ["Headaches", "Dizziness", "Fatigue"],
-    previousDiagnosis: ["Hypertension (Primary)"],
-    previousPrescriptions: [
-      { name: "Lisinopril", dosage: "10mg", schedule: "Once daily" },
-      { name: "Aspirin", dosage: "81mg", schedule: "Once daily" },
-    ].map((p) => `${p.name} - ${p.dosage} - ${p.schedule}`),
-    previousInstructions: [
-      "Monitor blood pressure at home",
-      "Reduce sodium intake",
-      "Regular exercise",
-    ],
-    vitalsHistory: [] as {
-      diastolic: number;
-      systolic: number;
-      hemoglobin: number;
-      date: string;
-      blood_pressure: number;
-      glucose: number;
-      sgpt: number;
-      sgot: number;
-      urea: number;
-    }[],
-  },
-  // Keep other appointments but add empty vitalsHistory arrays
-  {
-    id: "A-1002",
-    patientName: "Priya Patel",
-    patientId: "P-1002",
-    patientAge: 47,
-    patientAvatar:
-      "/abstract-geometric-shapes.png?height=36&width=36&query=Priya Patel",
-    patientEmail: "priya.p@example.com",
-    patientPhone: "+91 87654 32109",
-    doctorName: "Dr. Sanjana Desai",
-    doctorId: "D-1002",
-    doctorAvatar:
-      "/abstract-geometric-shapes.png?height=36&width=36&query=Dr. Sanjana Desai",
-    specialty: "Dermatology",
-    date: "May 15, 2023",
-    time: "11:30 AM",
-    duration: "45 minutes",
-    type: "Consultation",
-    status: "Confirmed",
-    location: "Main Clinic, Room 203",
-    notes:
-      "Initial consultation for skin condition. Patient has reported persistent rash on arms.",
-    previousComplaints: ["Skin rash", "Itching"],
-    previousDiagnosis: [],
-    previousPrescriptions: [],
-    previousInstructions: [],
-    vitalsHistory: [
-      {
-        date: "Apr 23, 2023",
-        blood_pressure: "140/88",
-        hemoglobin: 13.5,
-        glucose: 90,
-        sgpt: 25,
-        sgot: 30,
-        urea: 20,
-        systolic: 140,
-        diastolic: 88,
-      },
-      {
-        date: "May 1, 2023",
-        blood_pressure: "135/85",
-        hemoglobin: 13.8,
-        glucose: 92,
-        sgpt: 28,
-        sgot: 32,
-        urea: 22,
-        systolic: 135,
-        diastolic: 85,
-      },
-      {
-        date: "May 10, 2023",
-        blood_pressure: "130/80",
-        hemoglobin: 14.0,
-        glucose: 88,
-        sgpt: 26,
-        sgot: 29,
-        urea: 21,
-        systolic: 130,
-        diastolic: 80,
-      },
-    ],
-  },
-  {
-    id: "A-1003",
-    patientName: "Rahul Verma",
-    patientId: "P-1003",
-    patientAge: 33,
-    patientAvatar:
-      "/abstract-geometric-shapes.png?height=36&width=36&query=Rahul Verma",
-    patientEmail: "rahul.v@example.com",
-    patientPhone: "+91 76543 21098",
-    doctorName: "Dr. Vikram Mehta",
-    doctorId: "D-1003",
-    doctorAvatar:
-      "/abstract-geometric-shapes.png?height=36&width=36&query=Dr. Vikram Mehta",
-    specialty: "Neurology",
-    date: "May 15, 2023",
-    time: "2:15 PM",
-    duration: "60 minutes",
-    type: "Follow-up",
-    status: "Cancelled",
-    location: "Main Clinic, Room 302",
-    notes:
-      "Follow-up after MRI scan. Patient experiencing recurring headaches.",
-    previousComplaints: ["Recurring headaches", "Visual aura"],
-    previousDiagnosis: ["Migraine"],
-    previousPrescriptions: [],
-    previousInstructions: ["Avoid triggers", "Keep headache diary"],
-    vitalsHistory: [],
-  },
-];
+// const APPOINTMENTS = [
+//   {
+//     id: "A-1001",
+//     patientName: "Amit Sharma",
+//     patientId: "P-1001",
+//     patientAge: 38,
+//     patientAvatar:
+//       "/abstract-geometric-shapes.png?height=36&width=36&query=Amit Sharma",
+//     patientEmail: "amit.s@example.com",
+//     patientPhone: "+91 98765 43210",
+//     doctorName: "Dr. Aditya Kapoor",
+//     doctorId: "D-1001",
+//     doctorAvatar:
+//       "/abstract-geometric-shapes.png?height=36&width=36&query=Dr. Aditya Kapoor",
+//     specialty: "Cardiology",
+//     date: "May 15, 2023",
+//     time: "10:00 AM",
+//     duration: "30 minutes",
+//     type: "Check-up",
+//     status: "Confirmed",
+//     location: "Main Clinic, Room 105",
+//     notes:
+//       "Follow-up on blood pressure medication. Patient to bring recent test results.",
+//     previousComplaints: ["Headaches", "Dizziness", "Fatigue"],
+//     previousDiagnosis: ["Hypertension (Primary)"],
+//     previousPrescriptions: [
+//       { name: "Lisinopril", dosage: "10mg", schedule: "Once daily" },
+//       { name: "Aspirin", dosage: "81mg", schedule: "Once daily" },
+//     ].map((p) => `${p.name} - ${p.dosage} - ${p.schedule}`),
+//     previousInstructions: [
+//       "Monitor blood pressure at home",
+//       "Reduce sodium intake",
+//       "Regular exercise",
+//     ],
+//     vitalsHistory: [] as VitalsHistoryRecord[],
+//   },
+//   {
+//     id: "A-1002",
+//     patientName: "Priya Patel",
+//     patientId: "P-1002",
+//     patientAge: 47,
+//     patientAvatar:
+//       "/abstract-geometric-shapes.png?height=36&width=36&query=Priya Patel",
+//     patientEmail: "priya.p@example.com",
+//     patientPhone: "+91 87654 32109",
+//     doctorName: "Dr. Sanjana Desai",
+//     doctorId: "D-1002",
+//     doctorAvatar:
+//       "/abstract-geometric-shapes.png?height=36&width=36&query=Dr. Sanjana Desai",
+//     specialty: "Dermatology",
+//     date: "May 15, 2023",
+//     time: "11:30 AM",
+//     duration: "45 minutes",
+//     type: "Consultation",
+//     status: "Confirmed",
+//     location: "Main Clinic, Room 203",
+//     notes:
+//       "Initial consultation for skin condition. Patient has reported persistent rash on arms.",
+//     previousComplaints: ["Skin rash", "Itching"],
+//     previousDiagnosis: [],
+//     previousPrescriptions: [],
+//     previousInstructions: [],
+//     vitalsHistory: [
+//       {
+//         date: "Apr 23, 2023",
+//         blood_pressure: "140/88",
+//         hemoglobin: 13.5,
+//         glucose: 90,
+//         sgpt: 25,
+//         sgot: 30,
+//         urea: 20,
+//         systolic: 140,
+//         diastolic: 88,
+//       },
+//       {
+//         date: "May 1, 2023",
+//         blood_pressure: "135/85",
+//         hemoglobin: 13.8,
+//         glucose: 92,
+//         sgpt: 28,
+//         sgot: 32,
+//         urea: 22,
+//         systolic: 135,
+//         diastolic: 85,
+//       },
+//       {
+//         date: "May 10, 2023",
+//         blood_pressure: "130/80",
+//         hemoglobin: 14.0,
+//         glucose: 88,
+//         sgpt: 26,
+//         sgot: 29,
+//         urea: 21,
+//         systolic: 130,
+//         diastolic: 80,
+//       },
+//     ],
+//   },
+//   {
+//     id: "A-1003",
+//     patientName: "Rahul Verma",
+//     patientId: "P-1003",
+//     patientAge: 33,
+//     patientAvatar:
+//       "/abstract-geometric-shapes.png?height=36&width=36&query=Rahul Verma",
+//     patientEmail: "rahul.v@example.com",
+//     patientPhone: "+91 76543 21098",
+//     doctorName: "Dr. Vikram Mehta",
+//     doctorId: "D-1003",
+//     doctorAvatar:
+//       "/abstract-geometric-shapes.png?height=36&width=36&query=Dr. Vikram Mehta",
+//     specialty: "Neurology",
+//     date: "May 15, 2023",
+//     time: "2:15 PM",
+//     duration: "60 minutes",
+//     type: "Follow-up",
+//     status: "Cancelled",
+//     location: "Main Clinic, Room 302",
+//     notes:
+//       "Follow-up after MRI scan. Patient experiencing recurring headaches.",
+//     previousComplaints: ["Recurring headaches", "Visual aura"],
+//     previousDiagnosis: ["Migraine"],
+//     previousPrescriptions: [],
+//     previousInstructions: ["Avoid triggers", "Keep headache diary"],
+//     vitalsHistory: [] as VitalsHistoryRecord[],
+//   },
+// ];
 
 // Define normal ranges for vitals
 const NORMAL_RANGES = {
@@ -322,7 +318,7 @@ export default function AppointmentDetailsPage() {
       ? appointment.vitalsHistory[0]
       : null;
 
-  console.log(latestVitals);
+  const vitalsHistory = appointment.vitalsHistory || [];
 
   const formatVitalValue = (key: string, value: string) => {
     switch (key) {
@@ -336,55 +332,38 @@ export default function AppointmentDetailsPage() {
       case "sgot":
       case "urea":
         return `${value} U/L`;
+      case "temprature":
+        return `${value} °F`; // Or use °C if appropriate
+      case "height":
+        return `${value} cm`; // Or use inches/feet if required
+      case "weight":
+        return `${value} kg`; // Or use lbs if required
       default:
         return value;
     }
   };
 
   // Prepare data for charts
-  const getChartData = (vitalType: string) => {
-    if (!appointment.vitalsHistory || appointment.vitalsHistory.length === 0) {
-      return [];
-    }
-
-    // Use the history array as is (newest first)
-    const history = [...appointment.vitalsHistory];
-
-    // Special handling for blood pressure
-    if (vitalType === "bloodPressure" || vitalType === "blood_pressure") {
-      return history.map((record) => {
-        if (record.blood_pressure) {
-          // Parse blood pressure value (e.g., "120/80" -> {systolic: 120, diastolic: 80})
-          const [systolic, diastolic] = record.blood_pressure
-            .toString()
-            .split("/")
-            .map(Number);
+  const getChartData = (field: string) => {
+    return vitalsHistory
+      .filter((v) => v[field])
+      .map((v) => {
+        const val = v[field as keyof typeof v];
+        if (field === "blood_pressure") {
+          const [systolic, diastolic] =
+            typeof val === "string" ? val.split("/").map(Number) : [0, 0];
           return {
-            date: record.date,
+            date: v.date,
             systolic,
             diastolic,
           };
         }
-        // Handle legacy or direct format
         return {
-          date: record.date,
-          systolic: record.systolic || 0,
-          diastolic: record.diastolic || 0,
+          date: v.date,
+          value: Number(val),
         };
       });
-    }
-
-    // For other vital types
-    return history.map((record) => ({
-      date: record.date,
-      value:
-        record[vitalType as keyof typeof record] ||
-        record[vitalType.toLowerCase() as keyof typeof record] ||
-        0,
-    }));
   };
-
-  console.log(getChartData("glucose"));
 
   const submitFunction = (data: any) => {
     setAppoinmentsList((prev: any) =>
@@ -462,19 +441,23 @@ export default function AppointmentDetailsPage() {
                         ? "destructive"
                         : "secondary"
                     }
-                    className={
+                    className={cn(
+                      "text-xs py-0 h-6 flex items-center justify-center",
                       appointment.status === "Confirmed"
                         ? "bg-blue-500 hover:bg-blue-600 text-white"
                         : appointment.status === "Completed" ||
                           appointment.status === "Cancelled"
                         ? "text-white"
                         : ""
-                    }
+                    )}
                   >
-                    {appointment.status}
+                    <span className="pt-[2px]">{appointment.status}</span>
                   </Badge>
-                  <Badge variant={"default"} className={"bg-yellow-500"}>
-                    VIP
+                  <Badge
+                    variant={"default"}
+                    className={"bg-yellow-500 hover:bg-yellow-600 text-white"}
+                  >
+                    <span className="pt-[2px]">VIP</span>
                   </Badge>
                 </div>
                 <Button
@@ -494,7 +477,7 @@ export default function AppointmentDetailsPage() {
         {/* Appointment Details Card */}
         <Card>
           <CardContent className="p-3 space-y-3">
-            <div className="grid grid-cols-3 gap-2">
+            {/* <div className="grid grid-cols-3 gap-2">
               <div className="space-y-1">
                 <div className="text-xs text-muted-foreground">Date</div>
                 <div className="flex items-center text-sm">
@@ -518,7 +501,7 @@ export default function AppointmentDetailsPage() {
               </div>
             </div>
 
-            <Separator className="my-2" />
+            <Separator className="my-2" /> */}
 
             <div className="space-y-1">
               <div className="text-xs text-muted-foreground">Notes</div>
@@ -614,45 +597,31 @@ export default function AppointmentDetailsPage() {
                           onValueChange={setActiveVitalTab}
                         >
                           <TabsList className="w-full grid grid-cols-3 sm:grid-cols-6 h-8">
-                            {!!latestVitals.blood_pressure && (
-                              <TabsTrigger
-                                value="bloodPressure"
-                                className="text-xs"
-                              >
-                                BP
-                              </TabsTrigger>
-                            )}
-                            {!!latestVitals.hemoglobin && (
-                              <TabsTrigger
-                                value="hemoglobin"
-                                className="text-xs"
-                              >
-                                Hemoglobin
-                              </TabsTrigger>
-                            )}
-                            {!!latestVitals.glucose && (
-                              <TabsTrigger value="glucose" className="text-xs">
-                                Glucose
-                              </TabsTrigger>
-                            )}
-                            {!!latestVitals.sgpt && (
-                              <TabsTrigger value="sgpt" className="text-xs">
-                                SGPT
-                              </TabsTrigger>
-                            )}
-                            {!!latestVitals.sgot && (
-                              <TabsTrigger value="sgot" className="text-xs">
-                                SGOT
-                              </TabsTrigger>
-                            )}
-                            {!!latestVitals.urea && (
-                              <TabsTrigger value="urea" className="text-xs">
-                                Urea
-                              </TabsTrigger>
-                            )}
-                          </TabsList>
+                            <TabsTrigger
+                              value="bloodPressure"
+                              className="text-xs"
+                            >
+                              BP
+                            </TabsTrigger>
+                            <TabsTrigger value="hemoglobin" className="text-xs">
+                              Hemoglobin
+                            </TabsTrigger>
 
-                          {!!latestVitals.blood_pressure && (
+                            <TabsTrigger value="glucose" className="text-xs">
+                              Glucose
+                            </TabsTrigger>
+                            <TabsTrigger value="temprature" className="text-xs">
+                              Temprature
+                            </TabsTrigger>
+
+                            <TabsTrigger value="weight" className="text-xs">
+                              Weight
+                            </TabsTrigger>
+                            <TabsTrigger value="height" className="text-xs">
+                              Height
+                            </TabsTrigger>
+                          </TabsList>
+                          {vitalsHistory.some((v) => v.blood_pressure) && (
                             <TabsContent value="bloodPressure" className="mt-2">
                               <div className="h-[200px] w-full">
                                 <ResponsiveContainer width="100%" height="100%">
@@ -689,7 +658,7 @@ export default function AppointmentDetailsPage() {
                             </TabsContent>
                           )}
 
-                          {!!latestVitals.hemoglobin && (
+                          {vitalsHistory.some((v) => v.hemoglobin) && (
                             <TabsContent value="hemoglobin" className="mt-2">
                               <div className="h-[200px] w-full">
                                 <ResponsiveContainer width="100%" height="100%">
@@ -714,7 +683,7 @@ export default function AppointmentDetailsPage() {
                             </TabsContent>
                           )}
 
-                          {!!latestVitals.glucose && (
+                          {vitalsHistory.some((v) => v.glucose) && (
                             <TabsContent value="glucose" className="mt-2">
                               <div className="h-[200px] w-full">
                                 <ResponsiveContainer width="100%" height="100%">
@@ -739,23 +708,26 @@ export default function AppointmentDetailsPage() {
                             </TabsContent>
                           )}
 
-                          {!!latestVitals.sgpt && (
-                            <TabsContent value="sgpt" className="mt-2">
+                          {vitalsHistory.some((v) => v.temprature) && (
+                            <TabsContent value="temprature" className="mt-2">
                               <div className="h-[200px] w-full">
                                 <ResponsiveContainer width="100%" height="100%">
-                                  <LineChart data={getChartData("sgpt")}>
+                                  <LineChart data={getChartData("temprature")}>
                                     <CartesianGrid strokeDasharray="3 3" />
                                     <XAxis
                                       dataKey="date"
                                       tick={{ fontSize: 10 }}
                                     />
-                                    <YAxis tick={{ fontSize: 10 }} />
+                                    <YAxis
+                                      domain={[97, 100]}
+                                      tick={{ fontSize: 10 }}
+                                    />
                                     <Tooltip />
                                     <Line
                                       type="monotone"
                                       dataKey="value"
-                                      stroke="#6366f1"
-                                      name="SGPT"
+                                      stroke="#f59e0b"
+                                      name="Temprature"
                                       dot={{ r: 3 }}
                                     />
                                   </LineChart>
@@ -764,11 +736,11 @@ export default function AppointmentDetailsPage() {
                             </TabsContent>
                           )}
 
-                          {!!latestVitals.sgot && (
-                            <TabsContent value="sgot" className="mt-2">
+                          {vitalsHistory.some((v) => v.weight) && (
+                            <TabsContent value="weight" className="mt-2">
                               <div className="h-[200px] w-full">
                                 <ResponsiveContainer width="100%" height="100%">
-                                  <LineChart data={getChartData("sgot")}>
+                                  <LineChart data={getChartData("weight")}>
                                     <CartesianGrid strokeDasharray="3 3" />
                                     <XAxis
                                       dataKey="date"
@@ -780,7 +752,7 @@ export default function AppointmentDetailsPage() {
                                       type="monotone"
                                       dataKey="value"
                                       stroke="#0ea5e9"
-                                      name="SGOT"
+                                      name="Weight"
                                       dot={{ r: 3 }}
                                     />
                                   </LineChart>
@@ -789,11 +761,11 @@ export default function AppointmentDetailsPage() {
                             </TabsContent>
                           )}
 
-                          {!!latestVitals.urea && (
-                            <TabsContent value="urea" className="mt-2">
+                          {vitalsHistory.some((v) => v.weight) && (
+                            <TabsContent value="height" className="mt-2">
                               <div className="h-[200px] w-full">
                                 <ResponsiveContainer width="100%" height="100%">
-                                  <LineChart data={getChartData("urea")}>
+                                  <LineChart data={getChartData("height")}>
                                     <CartesianGrid strokeDasharray="3 3" />
                                     <XAxis
                                       dataKey="date"
@@ -804,8 +776,8 @@ export default function AppointmentDetailsPage() {
                                     <Line
                                       type="monotone"
                                       dataKey="value"
-                                      stroke="#8b5cf6"
-                                      name="Urea"
+                                      stroke="#0ea5e9"
+                                      name="Height"
                                       dot={{ r: 3 }}
                                     />
                                   </LineChart>
@@ -868,10 +840,10 @@ export default function AppointmentDetailsPage() {
                   <PrescriptionForm
                     prescriptions={prescriptions}
                     onChange={setPrescriptions}
-                    previousPrescriptions={appointment.previousPrescriptions.map(
-                      (text) => {
+                    previousPrescriptions={appointment.previousPrescriptions?.map(
+                      (text: string) => {
                         // Try to parse existing prescriptions into structured format
-                        const parts = text.split(" - ");
+                        const parts = (text as string).split(" - ");
                         if (parts.length >= 3) {
                           return {
                             name: parts[0],
@@ -976,13 +948,13 @@ export default function AppointmentDetailsPage() {
             patientName={appointment.patientName}
             patientId={appointment.patientId}
             patientAge={appointment.patientAge}
-            doctorName={appointment.doctorName}
+            doctorName={appointment.doctorName || "Dr. Smith"}
             date={appointment.date}
             prescriptions={prescriptions}
-            previousPrescriptions={appointment.previousPrescriptions.map(
+            previousPrescriptions={appointment.previousPrescriptions?.map(
               (text) => {
                 // Try to parse existing prescriptions into structured format
-                const parts = text.split(" - ");
+                const parts = (text as string).split(" - ");
                 if (parts.length >= 3) {
                   return {
                     name: parts[0],

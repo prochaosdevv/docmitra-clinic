@@ -12,7 +12,7 @@ interface Appointment {
   patientName: string;
   patientId: string;
   patientAge: number;
-  avatar: string;
+  patientAvatar: string;
   date: string;
   time: string;
   type: string;
@@ -22,8 +22,10 @@ interface Appointment {
 
 export function StaffAppointments({
   appointments,
+  checkHealthCheckModal,
 }: {
   appointments: Appointment[];
+  checkHealthCheckModal: (appointmentId: string) => boolean;
 }) {
   const router = useRouter();
 
@@ -38,12 +40,18 @@ export function StaffAppointments({
           <div
             key={appointment.id}
             className="rounded-lg border p-2 hover:shadow-md transition-shadow cursor-pointer"
-            onClick={() => router.push(`/appointments/${appointment.id}`)}
+            onClick={() => {
+              const shouldRedirect = checkHealthCheckModal(appointment.id);
+              if (shouldRedirect) {
+                router.push(`/appointments/${appointment.id}`);
+              }
+              // router.push(`/appointments/${appointment.id}`);
+            }}
           >
             <div className="flex items-center gap-2 mb-2">
               <Avatar className="h-8 w-8">
                 <AvatarImage
-                  src={appointment.avatar || "/placeholder.svg"}
+                  src={appointment.patientAvatar || "/placeholder.svg"}
                   alt={appointment.patientName}
                 />
                 <AvatarFallback>
