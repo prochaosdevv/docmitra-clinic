@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { MainLayout } from "@/components/layout/main-layout";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,7 +27,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Loader2, MoreHorizontal, Plus, Search } from "lucide-react";
+import { MoreHorizontal, Plus, Search, Loader2 } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -37,136 +37,20 @@ import {
 } from "@/components/ui/select";
 import { AddDoctorModal } from "@/components/modals/add-doctor-modal";
 import { ResponsiveTable } from "@/components/ui/responsive-table";
-
-const doctors = [
-  {
-    id: "D-1001",
-    name: "Dr. Rajesh Sharma",
-    specialty: "Cardiology",
-    email: "rajesh.sharma@mediclinic.com",
-    phone: "(555) 123-4567",
-    joinDate: "Jan 15, 2018",
-    patients: 124,
-    status: "Active",
-  },
-  {
-    id: "D-1002",
-    name: "Dr. Priya Patel",
-    specialty: "Dermatology",
-    email: "priya.patel@mediclinic.com",
-    phone: "(555) 234-5678",
-    joinDate: "Mar 10, 2019",
-    patients: 98,
-    status: "Active",
-  },
-  {
-    id: "D-1003",
-    name: "Dr. Vikram Singh",
-    specialty: "Neurology",
-    email: "vikram.singh@mediclinic.com",
-    phone: "(555) 345-6789",
-    joinDate: "Jun 5, 2017",
-    patients: 87,
-    status: "On Leave",
-  },
-  {
-    id: "D-1004",
-    name: "Dr. Anjali Desai",
-    specialty: "Pediatrics",
-    email: "anjali.desai@mediclinic.com",
-    phone: "(555) 456-7890",
-    joinDate: "Sep 20, 2020",
-    patients: 156,
-    status: "Active",
-  },
-  {
-    id: "D-1005",
-    name: "Dr. Arjun Kapoor",
-    specialty: "Orthopedic Surgery",
-    email: "arjun.kapoor@mediclinic.com",
-    phone: "(555) 567-8901",
-    joinDate: "Feb 12, 2016",
-    patients: 112,
-    status: "Active",
-  },
-  {
-    id: "D-1006",
-    name: "Dr. Meera Reddy",
-    specialty: "Obstetrics & Gynecology",
-    email: "meera.r@mediclinic.com",
-    phone: "(555) 678-9012",
-    joinDate: "Jul 8, 2019",
-    patients: 143,
-    status: "Active",
-  },
-  {
-    id: "D-1007",
-    name: "Dr. Sanjay Kumar",
-    specialty: "Psychiatry",
-    email: "sanjay.kumar@mediclinic.com",
-    phone: "(555) 789-0123",
-    joinDate: "Apr 15, 2018",
-    patients: 76,
-    status: "Active",
-  },
-  {
-    id: "D-1008",
-    name: "Dr. Neha Gupta",
-    specialty: "General Medicine",
-    email: "neha.g@mediclinic.com",
-    phone: "(555) 890-1234",
-    joinDate: "Oct 30, 2017",
-    patients: 189,
-    status: "Active",
-  },
-  {
-    id: "D-1009",
-    name: "Dr. Rahul Verma",
-    specialty: "Ophthalmology",
-    email: "rahul.v@mediclinic.com",
-    phone: "(555) 901-2345",
-    joinDate: "May 17, 2020",
-    patients: 92,
-    status: "Inactive",
-  },
-  {
-    id: "D-1010",
-    name: "Dr. Kavita Malhotra",
-    specialty: "Endocrinology",
-    email: "kavita.m@mediclinic.com",
-    phone: "(555) 012-3456",
-    joinDate: "Nov 3, 2019",
-    patients: 68,
-    status: "Active",
-  },
-];
+import { useApi } from "@/hooks/use-api";
+import { doctorService, type DoctorFilters } from "@/lib/api/doctors";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function DoctorsPage() {
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [specialtyFilter, setSpecialtyFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-
-  // Filter doctors based on search term and filters
-  const filteredDoctors = doctors.filter((doctor) => {
-    // Search filter
-    const matchesSearch =
-      searchTerm === "" ||
-      doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      doctor.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      doctor.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      doctor.specialty.toLowerCase().includes(searchTerm.toLowerCase());
-
-    // Specialty filter
-    const matchesSpecialty =
-      specialtyFilter === "all" ||
-      doctor.specialty.toLowerCase().includes(specialtyFilter.toLowerCase());
-
-    // Status filter
-    const matchesStatus =
-      statusFilter === "all" || doctor.status === statusFilter;
-
-    return matchesSearch && matchesSpecialty && matchesStatus;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [filters, setFilters] = useState<DoctorFilters>({
+    page: 1,
+    limit: 10,
   });
 
   // Fetch doctors with filters
@@ -291,7 +175,11 @@ export default function DoctorsPage() {
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                 <Select
                   value={specialtyFilter}
-                  onValueChange={setSpecialtyFilter}
+                  onValueChange={(value) => {
+                    setSpecialtyFilter(value);
+                    setCurrentPage(1);
+                    setTimeout(applyFilters, 0);
+                  }}
                 >
                   <SelectTrigger className="w-full sm:w-[180px]">
                     <SelectValue placeholder="Filter by specialty" />
@@ -316,6 +204,7 @@ export default function DoctorsPage() {
                   value={statusFilter}
                   onValueChange={(value) => {
                     setStatusFilter(value);
+                    setCurrentPage(1);
                     setTimeout(applyFilters, 0);
                   }}
                 >
@@ -470,7 +359,11 @@ export default function DoctorsPage() {
                                 Patient List
                               </DropdownMenuItem>
                               {doctor.status === "Active" ? (
-                                <DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    handleStatusUpdate(doctor.id, "On Leave")
+                                  }
+                                >
                                   Set On Leave
                                 </DropdownMenuItem>
                               ) : doctor.status === "On Leave" ? (
@@ -550,6 +443,7 @@ export default function DoctorsPage() {
       <AddDoctorModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
+        onSuccess={handleAddDoctorSuccess}
       />
     </MainLayout>
   );

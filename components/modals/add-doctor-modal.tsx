@@ -1,18 +1,25 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Modal } from "@/components/ui/modal"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { toast } from "@/components/ui/use-toast"
+import { useState } from "react";
+import { Modal } from "@/components/ui/modal";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { toast } from "@/components/ui/use-toast";
 
 interface AddDoctorModalProps {
-  isOpen: boolean
-  onClose: () => void
+  isOpen: boolean;
+  onClose: () => void;
+  onSuccess?: () => void;
 }
 
 export function AddDoctorModal({ isOpen, onClose }: AddDoctorModalProps) {
@@ -22,51 +29,51 @@ export function AddDoctorModal({ isOpen, onClose }: AddDoctorModalProps) {
     email: "",
     phone: "",
     status: "Active",
-  })
-  const [isLoading, setIsLoading] = useState(false)
+  });
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleSelectChange = (name: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
+    e.preventDefault();
+    setIsLoading(true);
 
     try {
       // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Show success toast
       toast({
         title: "Doctor added successfully",
         description: `${formData.name} has been added to the system.`,
-      })
+      });
 
       // Close modal and reset form
-      onClose()
+      onClose();
       setFormData({
         name: "",
         specialty: "",
         email: "",
         phone: "",
         status: "Active",
-      })
+      });
     } catch (error) {
       toast({
         title: "Error",
         description: "There was an error adding the doctor. Please try again.",
         variant: "destructive",
-      })
+      });
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <Modal
@@ -104,10 +111,16 @@ export function AddDoctorModal({ isOpen, onClose }: AddDoctorModalProps) {
                 <SelectItem value="Dermatology">Dermatology</SelectItem>
                 <SelectItem value="Neurology">Neurology</SelectItem>
                 <SelectItem value="Pediatrics">Pediatrics</SelectItem>
-                <SelectItem value="Orthopedic Surgery">Orthopedic Surgery</SelectItem>
-                <SelectItem value="Obstetrics & Gynecology">Obstetrics & Gynecology</SelectItem>
+                <SelectItem value="Orthopedic Surgery">
+                  Orthopedic Surgery
+                </SelectItem>
+                <SelectItem value="Obstetrics & Gynecology">
+                  Obstetrics & Gynecology
+                </SelectItem>
                 <SelectItem value="Psychiatry">Psychiatry</SelectItem>
-                <SelectItem value="General Medicine">General Medicine</SelectItem>
+                <SelectItem value="General Medicine">
+                  General Medicine
+                </SelectItem>
                 <SelectItem value="Ophthalmology">Ophthalmology</SelectItem>
                 <SelectItem value="Endocrinology">Endocrinology</SelectItem>
               </SelectContent>
@@ -141,7 +154,10 @@ export function AddDoctorModal({ isOpen, onClose }: AddDoctorModalProps) {
 
           <div className="grid gap-2">
             <Label htmlFor="status">Status</Label>
-            <Select value={formData.status} onValueChange={(value) => handleSelectChange("status", value)}>
+            <Select
+              value={formData.status}
+              onValueChange={(value) => handleSelectChange("status", value)}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select status" />
               </SelectTrigger>
@@ -164,5 +180,5 @@ export function AddDoctorModal({ isOpen, onClose }: AddDoctorModalProps) {
         </div>
       </form>
     </Modal>
-  )
+  );
 }
