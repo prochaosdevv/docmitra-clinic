@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import type * as React from "react"
-import { X } from "lucide-react"
+import type * as React from "react";
+import { X } from "lucide-react";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -12,17 +12,17 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 
 interface ModalProps {
-  title: string
-  description?: string
-  isOpen: boolean
-  onClose: () => void
-  children: React.ReactNode
-  className?: string
-  showCloseButton?: boolean
-  footer?: React.ReactNode
+  title: string;
+  description?: string;
+  isOpen: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
+  className?: string;
+  showCloseButton?: boolean;
+  footer?: React.ReactNode;
 }
 
 export function Modal({
@@ -37,7 +37,7 @@ export function Modal({
 }: ModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className={cn("sm:max-w-[500px]", className)}>
+      <DialogContent className={cn(className)}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}
@@ -56,5 +56,5 @@ export function Modal({
         {footer && <DialogFooter>{footer}</DialogFooter>}
       </DialogContent>
     </Dialog>
-  )
+  );
 }

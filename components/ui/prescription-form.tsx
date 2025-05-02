@@ -1,27 +1,95 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { X, Plus, Clock, Sun, Coffee, Moon } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
+import { useEffect, useRef, useState } from "react";
+import { X, Plus, Clock, Sun, Coffee, Moon, Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "./command";
+import { cn } from "@/lib/utils";
 
 interface Prescription {
-  name: string
-  dosage: string
-  schedule: string
-  timeOfDay?: string[]
-  withFood?: string
+  name: string;
+  dosage: string;
+  schedule: string;
+  timeOfDay?: string[];
+  withFood?: string;
 }
 
 interface PrescriptionFormProps {
-  prescriptions: Prescription[]
-  onChange: (prescriptions: Prescription[]) => void
-  previousPrescriptions?: Prescription[]
-  onRemovePrevious?: (prescription: Prescription) => void
+  prescriptions: Prescription[];
+  onChange: (prescriptions: Prescription[]) => void;
+  previousPrescriptions?: Prescription[];
+  onRemovePrevious?: (prescription: Prescription) => void;
 }
+
+const medicineOptions = [
+  "Lisinopril",
+  "Metformin",
+  "Atorvastatin",
+  "Amlodipine",
+  "Simvastatin",
+  "Losartan",
+  "Levothyroxine",
+  "Omeprazole",
+  "Hydrochlorothiazide",
+  "Gabapentin",
+  "Albuterol",
+  "Amoxicillin",
+  "Prednisone",
+  "Clopidogrel",
+  "Montelukast",
+  "Rosuvastatin",
+  "Furosemide",
+  "Sertraline",
+  "Citalopram",
+  "Escitalopram",
+  "Tamsulosin",
+  "Meloxicam",
+  "Metoprolol",
+  "Atenolol",
+  "Pantoprazole",
+  "Fluticasone",
+  "Tramadol",
+  "Bupropion",
+  "Warfarin",
+  "Cyclobenzaprine",
+  "Cephalexin",
+  "Doxycycline",
+  "Insulin Glargine",
+  "Insulin Aspart",
+  "Ranitidine",
+  "Cetirizine",
+  "Loratadine",
+  "Diphenhydramine",
+  "Naproxen",
+  "Ibuprofen",
+  "Acetaminophen",
+  "Azithromycin",
+  "Fluoxetine",
+  "Paroxetine",
+  "Propranolol",
+  "Spironolactone",
+  "Finasteride",
+  "Trazodone",
+  "Diazepam",
+  "Lorazepam",
+];
 
 export function PrescriptionForm({
   prescriptions,
@@ -35,10 +103,20 @@ export function PrescriptionForm({
     schedule: "",
     timeOfDay: [],
     withFood: "",
-  })
-  const [scheduleType, setScheduleType] = useState<string>("daily")
-  const [timesPerDay, setTimesPerDay] = useState<string>("1")
-  const [customSchedule, setCustomSchedule] = useState<string>("")
+  });
+  const [scheduleType, setScheduleType] = useState<string>("daily");
+  const [timesPerDay, setTimesPerDay] = useState<string>("1");
+  const [customSchedule, setCustomSchedule] = useState<string>("");
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  const [open, setOpen] = useState(false);
+  const [selectedMedicine, setSelectedMedicine] = useState(
+    newPrescription.name
+  );
+
+  useEffect(() => {
+    setSelectedMedicine(newPrescription.name);
+  }, [newPrescription.name]);
 
   const handleAddPrescription = () => {
     if (
@@ -46,31 +124,31 @@ export function PrescriptionForm({
       newPrescription.dosage.trim() === "" ||
       newPrescription.schedule.trim() === ""
     ) {
-      return
+      return;
     }
 
-    const updatedPrescriptions = [...prescriptions, { ...newPrescription }]
-    onChange(updatedPrescriptions)
+    const updatedPrescriptions = [...prescriptions, { ...newPrescription }];
+    onChange(updatedPrescriptions);
     setNewPrescription({
       name: "",
       dosage: "",
       schedule: "",
       timeOfDay: [],
       withFood: "",
-    })
-    setScheduleType("daily")
-    setTimesPerDay("1")
-    setCustomSchedule("")
-  }
+    });
+    setScheduleType("daily");
+    setTimesPerDay("1");
+    setCustomSchedule("");
+  };
 
   const handleRemovePrescription = (index: number) => {
-    const updatedPrescriptions = [...prescriptions]
-    updatedPrescriptions.splice(index, 1)
-    onChange(updatedPrescriptions)
-  }
+    const updatedPrescriptions = [...prescriptions];
+    updatedPrescriptions.splice(index, 1);
+    onChange(updatedPrescriptions);
+  };
 
   const updateSchedule = () => {
-    let scheduleText = ""
+    let scheduleText = "";
 
     switch (scheduleType) {
       case "daily":
@@ -78,78 +156,92 @@ export function PrescriptionForm({
           timesPerDay === "1"
             ? "Once daily"
             : timesPerDay === "2"
-              ? "Twice daily"
-              : timesPerDay === "3"
-                ? "Three times daily"
-                : timesPerDay === "4"
-                  ? "Four times daily"
-                  : `${timesPerDay} times daily`
-        break
+            ? "Twice daily"
+            : timesPerDay === "3"
+            ? "Three times daily"
+            : timesPerDay === "4"
+            ? "Four times daily"
+            : `${timesPerDay} times daily`;
+        break;
       case "weekly":
-        scheduleText = "Once weekly"
-        break
+        scheduleText = "Once weekly";
+        break;
       case "alternate":
-        scheduleText = "Every other day"
-        break
+        scheduleText = "Every other day";
+        break;
       case "custom":
-        scheduleText = customSchedule
-        break
+        scheduleText = customSchedule;
+        break;
     }
 
-    setNewPrescription((prev) => ({ ...prev, schedule: scheduleText }))
-  }
+    setNewPrescription((prev) => ({ ...prev, schedule: scheduleText }));
+  };
 
   const handleTimeOfDayChange = (time: string) => {
-    const currentTimes = newPrescription.timeOfDay || []
-    const updatedTimes = currentTimes.includes(time) ? currentTimes.filter((t) => t !== time) : [...currentTimes, time]
+    const currentTimes = newPrescription.timeOfDay || [];
+    const updatedTimes = currentTimes.includes(time)
+      ? currentTimes.filter((t) => t !== time)
+      : [...currentTimes, time];
 
-    setNewPrescription((prev) => ({ ...prev, timeOfDay: updatedTimes }))
-  }
+    setNewPrescription((prev) => ({ ...prev, timeOfDay: updatedTimes }));
+  };
 
   // Helper to format time of day for display
   const formatTimeOfDay = (times: string[] | undefined) => {
-    if (!times || times.length === 0) return ""
-    return times.join(", ")
-  }
+    if (!times || times.length === 0) return "";
+    return times.join(", ");
+  };
 
   // Helper to get icon for time of day
   const getTimeIcon = (time: string) => {
     switch (time) {
       case "Morning":
-        return <Sun className="h-3 w-3 mr-1" />
+        return <Sun className="h-3 w-3 mr-1" />;
       case "Noon":
-        return <Coffee className="h-3 w-3 mr-1" />
+        return <Coffee className="h-3 w-3 mr-1" />;
       case "Evening":
       case "Night":
-        return <Moon className="h-3 w-3 mr-1" />
+        return <Moon className="h-3 w-3 mr-1" />;
       default:
-        return null
+        return null;
     }
-  }
+  };
 
   return (
     <div className="space-y-4">
       {/* Previous prescriptions */}
       {previousPrescriptions.length > 0 && (
         <div className="mb-2">
-          <div className="text-xs text-muted-foreground mb-1">Previous prescriptions:</div>
+          <div className="text-xs text-muted-foreground mb-1">
+            Previous prescriptions:
+          </div>
           <div className="flex flex-col gap-2">
             {previousPrescriptions.map((prescription, index) => (
-              <div key={`prev-${index}`} className="flex items-center gap-2 rounded-md border p-2 text-xs">
+              <div
+                key={`prev-${index}`}
+                className="flex items-center gap-2 rounded-md border p-2 text-xs"
+              >
                 <div className="flex-1">
                   <div className="font-medium">{prescription.name}</div>
-                  <div className="text-muted-foreground">{prescription.dosage}</div>
+                  <div className="text-muted-foreground">
+                    {prescription.dosage}
+                  </div>
                   <div className="flex items-center mt-1 text-muted-foreground">
                     <Clock className="h-3 w-3 mr-1" />
                     {prescription.schedule}
                   </div>
-                  {prescription.timeOfDay && prescription.timeOfDay.length > 0 && (
-                    <div className="flex items-center mt-1 text-muted-foreground">
-                      {getTimeIcon(prescription.timeOfDay[0])}
-                      {formatTimeOfDay(prescription.timeOfDay)}
+                  {prescription.timeOfDay &&
+                    prescription.timeOfDay.length > 0 && (
+                      <div className="flex items-center mt-1 text-muted-foreground">
+                        {getTimeIcon(prescription.timeOfDay[0])}
+                        {formatTimeOfDay(prescription.timeOfDay)}
+                      </div>
+                    )}
+                  {prescription.withFood && (
+                    <div className="mt-1 text-muted-foreground">
+                      {prescription.withFood}
                     </div>
                   )}
-                  {prescription.withFood && <div className="mt-1 text-muted-foreground">{prescription.withFood}</div>}
                 </div>
                 {onRemovePrevious && (
                   <Button
@@ -174,21 +266,31 @@ export function PrescriptionForm({
           <div className="text-xs font-medium mb-1">Current prescriptions:</div>
           <div className="flex flex-col gap-2">
             {prescriptions.map((prescription, index) => (
-              <div key={index} className="flex items-center gap-2 rounded-md border p-2 text-xs">
+              <div
+                key={index}
+                className="flex items-center gap-2 rounded-md border p-2 text-xs"
+              >
                 <div className="flex-1">
                   <div className="font-medium">{prescription.name}</div>
-                  <div className="text-muted-foreground">{prescription.dosage}</div>
+                  <div className="text-muted-foreground">
+                    {prescription.dosage}
+                  </div>
                   <div className="flex items-center mt-1 text-muted-foreground">
                     <Clock className="h-3 w-3 mr-1" />
                     {prescription.schedule}
                   </div>
-                  {prescription.timeOfDay && prescription.timeOfDay.length > 0 && (
-                    <div className="flex items-center mt-1 text-muted-foreground">
-                      {getTimeIcon(prescription.timeOfDay[0])}
-                      {formatTimeOfDay(prescription.timeOfDay)}
+                  {prescription.timeOfDay &&
+                    prescription.timeOfDay.length > 0 && (
+                      <div className="flex items-center mt-1 text-muted-foreground">
+                        {getTimeIcon(prescription.timeOfDay[0])}
+                        {formatTimeOfDay(prescription.timeOfDay)}
+                      </div>
+                    )}
+                  {prescription.withFood && (
+                    <div className="mt-1 text-muted-foreground">
+                      {prescription.withFood}
                     </div>
                   )}
-                  {prescription.withFood && <div className="mt-1 text-muted-foreground">{prescription.withFood}</div>}
                 </div>
                 <Button
                   variant="ghost"
@@ -213,13 +315,67 @@ export function PrescriptionForm({
           <Label htmlFor="medication-name" className="text-xs">
             Medication Name
           </Label>
-          <Input
+          {/* <Input
             id="medication-name"
             placeholder="e.g., Lisinopril"
             value={newPrescription.name}
             onChange={(e) => setNewPrescription({ ...newPrescription, name: e.target.value })}
             className="h-8 text-xs"
-          />
+          /> */}
+
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                ref={triggerRef}
+                variant="outline"
+                role="combobox"
+                size="sm"
+                className="justify-between h-8 text-xs w-full"
+              >
+                {selectedMedicine || "Search medicine..."}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent
+              className="p-0"
+              align="start"
+              style={{ width: triggerRef.current?.offsetWidth }}
+            >
+              <Command>
+                <CommandInput
+                  placeholder="Search medicine..."
+                  className="h-8 text-xs"
+                />
+                <CommandList className="max-h-60 overflow-y-auto">
+                  <CommandEmpty>No medicine found.</CommandEmpty>
+                  {medicineOptions.map((medicine) => (
+                    <CommandItem
+                      key={medicine}
+                      value={medicine}
+                      className="text-xs"
+                      onSelect={() => {
+                        setNewPrescription({
+                          ...newPrescription,
+                          name: medicine,
+                        });
+                        setSelectedMedicine(medicine);
+                        setOpen(false);
+                      }}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          medicine === selectedMedicine
+                            ? "opacity-100"
+                            : "opacity-0"
+                        )}
+                      />
+                      {medicine}
+                    </CommandItem>
+                  ))}
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
         </div>
 
         <div className="grid gap-2">
@@ -230,7 +386,9 @@ export function PrescriptionForm({
             id="medication-dosage"
             placeholder="e.g., 10mg"
             value={newPrescription.dosage}
-            onChange={(e) => setNewPrescription({ ...newPrescription, dosage: e.target.value })}
+            onChange={(e) =>
+              setNewPrescription({ ...newPrescription, dosage: e.target.value })
+            }
             className="h-8 text-xs"
           />
         </div>
@@ -241,28 +399,40 @@ export function PrescriptionForm({
             <Select
               value={scheduleType}
               onValueChange={(value) => {
-                setScheduleType(value)
+                setScheduleType(value);
                 setTimeout(() => {
                   if (value === "daily") {
                     const scheduleText =
                       timesPerDay === "1"
                         ? "Once daily"
                         : timesPerDay === "2"
-                          ? "Twice daily"
-                          : timesPerDay === "3"
-                            ? "Three times daily"
-                            : timesPerDay === "4"
-                              ? "Four times daily"
-                              : `${timesPerDay} times daily`
-                    setNewPrescription((prev) => ({ ...prev, schedule: scheduleText }))
+                        ? "Twice daily"
+                        : timesPerDay === "3"
+                        ? "Three times daily"
+                        : timesPerDay === "4"
+                        ? "Four times daily"
+                        : `${timesPerDay} times daily`;
+                    setNewPrescription((prev) => ({
+                      ...prev,
+                      schedule: scheduleText,
+                    }));
                   } else if (value === "weekly") {
-                    setNewPrescription((prev) => ({ ...prev, schedule: "Once weekly" }))
+                    setNewPrescription((prev) => ({
+                      ...prev,
+                      schedule: "Once weekly",
+                    }));
                   } else if (value === "alternate") {
-                    setNewPrescription((prev) => ({ ...prev, schedule: "Every other day" }))
+                    setNewPrescription((prev) => ({
+                      ...prev,
+                      schedule: "Every other day",
+                    }));
                   } else if (value === "custom") {
-                    setNewPrescription((prev) => ({ ...prev, schedule: customSchedule }))
+                    setNewPrescription((prev) => ({
+                      ...prev,
+                      schedule: customSchedule,
+                    }));
                   }
-                }, 0)
+                }, 0);
               }}
             >
               <SelectTrigger className="h-8 text-xs">
@@ -280,20 +450,23 @@ export function PrescriptionForm({
               <Select
                 value={timesPerDay}
                 onValueChange={(value) => {
-                  setTimesPerDay(value)
+                  setTimesPerDay(value);
                   setTimeout(() => {
                     const scheduleText =
                       value === "1"
                         ? "Once daily"
                         : value === "2"
-                          ? "Twice daily"
-                          : value === "3"
-                            ? "Three times daily"
-                            : value === "4"
-                              ? "Four times daily"
-                              : `${value} times daily`
-                    setNewPrescription((prev) => ({ ...prev, schedule: scheduleText }))
-                  }, 0)
+                        ? "Twice daily"
+                        : value === "3"
+                        ? "Three times daily"
+                        : value === "4"
+                        ? "Four times daily"
+                        : `${value} times daily`;
+                    setNewPrescription((prev) => ({
+                      ...prev,
+                      schedule: scheduleText,
+                    }));
+                  }, 0);
                 }}
               >
                 <SelectTrigger className="h-8 text-xs">
@@ -313,8 +486,11 @@ export function PrescriptionForm({
                 placeholder="e.g., Every Monday and Thursday"
                 value={customSchedule}
                 onChange={(e) => {
-                  setCustomSchedule(e.target.value)
-                  setNewPrescription({ ...newPrescription, schedule: e.target.value })
+                  setCustomSchedule(e.target.value);
+                  setNewPrescription({
+                    ...newPrescription,
+                    schedule: e.target.value,
+                  });
                 }}
                 className="h-8 text-xs"
               />
@@ -372,7 +548,9 @@ export function PrescriptionForm({
           <Label className="text-xs">With Food</Label>
           <Select
             value={newPrescription.withFood}
-            onValueChange={(value) => setNewPrescription({ ...newPrescription, withFood: value })}
+            onValueChange={(value) =>
+              setNewPrescription({ ...newPrescription, withFood: value })
+            }
           >
             <SelectTrigger className="h-8 text-xs">
               <SelectValue placeholder="Select food instructions" />
@@ -380,9 +558,15 @@ export function PrescriptionForm({
             <SelectContent>
               <SelectItem value="Take with food">Take with food</SelectItem>
               <SelectItem value="Take after meals">Take after meals</SelectItem>
-              <SelectItem value="Take on empty stomach">Take on empty stomach</SelectItem>
-              <SelectItem value="Take 30 minutes before meals">Take 30 minutes before meals</SelectItem>
-              <SelectItem value="Take 1 hour after meals">Take 1 hour after meals</SelectItem>
+              <SelectItem value="Take on empty stomach">
+                Take on empty stomach
+              </SelectItem>
+              <SelectItem value="Take 30 minutes before meals">
+                Take 30 minutes before meals
+              </SelectItem>
+              <SelectItem value="Take 1 hour after meals">
+                Take 1 hour after meals
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -391,12 +575,16 @@ export function PrescriptionForm({
           size="sm"
           className="w-full mt-2"
           onClick={handleAddPrescription}
-          disabled={!newPrescription.name || !newPrescription.dosage || !newPrescription.schedule}
+          disabled={
+            !newPrescription.name ||
+            !newPrescription.dosage ||
+            !newPrescription.schedule
+          }
         >
           <Plus className="h-3.5 w-3.5 mr-1" />
           Add Prescription
         </Button>
       </div>
     </div>
-  )
+  );
 }

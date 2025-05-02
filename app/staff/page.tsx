@@ -1,18 +1,42 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { MainLayout } from "@/components/layout/main-layout"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { MoreHorizontal, Plus, Search } from "lucide-react"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { AddStaffModal } from "@/components/modals/add-staff-modal"
-import { ResponsiveTable } from "@/components/ui/responsive-table"
+import { useState } from "react";
+import { MainLayout } from "@/components/layout/main-layout";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { MoreHorizontal, Plus, Search } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { AddStaffModal } from "@/components/modals/add-staff-modal";
+import { ResponsiveTable } from "@/components/ui/responsive-table";
 
 const staff = [
   {
@@ -105,7 +129,7 @@ const staff = [
     joinDate: "Sep 8, 2021",
     status: "On Leave",
   },
-]
+];
 
 // Map roles to categories for filtering
 const roleCategories = {
@@ -119,13 +143,13 @@ const roleCategories = {
   Pharmacist: "other",
   "Medical Assistant": "other",
   "Security Officer": "other",
-}
+};
 
 export default function StaffPage() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [roleFilter, setRoleFilter] = useState("all")
-  const [statusFilter, setStatusFilter] = useState("all")
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState("");
+  const [roleFilter, setRoleFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   // Filter staff based on search term and filters
   const filteredStaff = staff.filter((member) => {
@@ -135,23 +159,24 @@ export default function StaffPage() {
       member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       member.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       member.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      member.role.toLowerCase().includes(searchTerm.toLowerCase())
+      member.role.toLowerCase().includes(searchTerm.toLowerCase());
 
     // Role filter
     const matchesRole =
-      roleFilter === "all" || roleCategories[member.role as keyof typeof roleCategories] === roleFilter
+      roleFilter === "all" ||
+      roleCategories[member.role as keyof typeof roleCategories] === roleFilter;
 
     // Status filter
-    const matchesStatus = statusFilter === "all" || member.status === statusFilter
+    const matchesStatus =
+      statusFilter === "all" || member.status === statusFilter;
 
-    return matchesSearch && matchesRole && matchesStatus
-  })
+    return matchesSearch && matchesRole && matchesStatus;
+  });
 
   return (
-    <MainLayout>
+    <MainLayout title="Staff">
       <div className="flex flex-col gap-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Staff Management</h1>
+        <div className="flex items-end justify-end">
           <Button onClick={() => setIsAddModalOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />
             Add Staff Member
@@ -161,7 +186,9 @@ export default function StaffPage() {
         <Card>
           <CardHeader>
             <CardTitle>Staff Directory</CardTitle>
-            <CardDescription>Manage clinic support staff and administrative personnel</CardDescription>
+            <CardDescription>
+              Manage clinic support staff and administrative personnel
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pb-4">
@@ -240,7 +267,9 @@ export default function StaffPage() {
                             </Avatar>
                             <div>
                               <div className="font-medium">{member.name}</div>
-                              <div className="text-xs text-muted-foreground">{member.id}</div>
+                              <div className="text-xs text-muted-foreground">
+                                {member.id}
+                              </div>
                             </div>
                           </div>
                         </TableCell>
@@ -248,7 +277,9 @@ export default function StaffPage() {
                         <TableCell>
                           <div className="text-sm">
                             <div>{member.email}</div>
-                            <div className="text-xs text-muted-foreground">{member.phone}</div>
+                            <div className="text-xs text-muted-foreground">
+                              {member.phone}
+                            </div>
                           </div>
                         </TableCell>
                         <TableCell>{member.joinDate}</TableCell>
@@ -258,8 +289,8 @@ export default function StaffPage() {
                               member.status === "Active"
                                 ? "default"
                                 : member.status === "On Leave"
-                                  ? "secondary"
-                                  : "destructive"
+                                ? "secondary"
+                                : "destructive"
                             }
                           >
                             {member.status}
@@ -279,7 +310,9 @@ export default function StaffPage() {
                               <DropdownMenuItem>Schedule</DropdownMenuItem>
                               <DropdownMenuItem>Performance</DropdownMenuItem>
                               {member.status === "Active" ? (
-                                <DropdownMenuItem>Set On Leave</DropdownMenuItem>
+                                <DropdownMenuItem>
+                                  Set On Leave
+                                </DropdownMenuItem>
                               ) : member.status === "On Leave" ? (
                                 <DropdownMenuItem>Set Active</DropdownMenuItem>
                               ) : (
@@ -297,7 +330,10 @@ export default function StaffPage() {
           </CardContent>
         </Card>
       </div>
-      <AddStaffModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} />
+      <AddStaffModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+      />
     </MainLayout>
-  )
+  );
 }
