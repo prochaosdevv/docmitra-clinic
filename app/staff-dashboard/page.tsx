@@ -156,7 +156,7 @@ export const APPOINTMENTS = [
     type: "Check-up",
     status: "Scheduled",
     doctorId: "D-1001",
-    mode: "in-clinic",
+    mode: "upcoming",
     vitalsHistory: [] as VitalsHistoryRecord[],
   },
   {
