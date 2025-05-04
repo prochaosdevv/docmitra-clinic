@@ -96,7 +96,7 @@ export const APPOINTMENTS = [
     type: "Follow-up",
     status: "Upcoming",
     doctorId: "D-1001",
-    mode: "in-clinic",
+    mode: "upcoming",
     patientEmail: "priya.p@example.com",
     patientPhone: "+91 87654 32109",
     doctorName: "Dr. Sanjana Desai",
@@ -126,7 +126,7 @@ export const APPOINTMENTS = [
     type: "Consultation",
     status: "Upcoming",
     doctorId: "D-1001",
-    mode: "in-clinic",
+    mode: "upcoming",
     patientEmail: "rahul.v@example.com",
     patientPhone: "+91 76543 21098",
     doctorName: "Dr. Vikram Mehta",
@@ -156,7 +156,7 @@ export const APPOINTMENTS = [
     type: "Check-up",
     status: "Scheduled",
     doctorId: "D-1001",
-    mode: "upcoming",
+    mode: "in-clinic",
     vitalsHistory: [
       {
         date: "Apr 23, 2023",
@@ -205,7 +205,7 @@ export const APPOINTMENTS = [
     type: "Follow-up",
     status: "Scheduled",
     doctorId: "D-1001",
-    mode: "upcoming",
+    mode: "in-clinic",
     vitalsHistory: [
       {
         date: "Apr 23, 2025",
@@ -254,7 +254,7 @@ export const APPOINTMENTS = [
     type: "Consultation",
     status: "Scheduled",
     doctorId: "D-1002",
-    mode: "upcoming",
+    mode: "in-clinic",
     vitalsHistory: [
       {
         date: "Apr 24, 2025",
